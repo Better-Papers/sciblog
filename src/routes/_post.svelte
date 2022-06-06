@@ -25,7 +25,7 @@
       <p class="text-lg font-medium">{subtitle}</p>
     {/if}
     {#if date ?? false}
-      <p class="pl-0.5 text-lg">{date}</p>
+      <p class="text-lg">{date}</p>
     {/if}
   </div>
 </header>
