@@ -81,10 +81,17 @@
 </div>
 <hr class="w-screen" />
 
-<h2>Highest correlation between frames.</h2>
-<aside class="sticky top-8">
-  Spikes averaged across all trials. Then, Spearman-correlate sequential/scrambled pairs and identify top-20 maximally correlated sequential frame given a scrambled frame.
-</aside>
+<h2>Shown Images</h2>
+
+<img src={pngs[rng]} />
+<input type="range" min="0" max="199" bind:value={rng} />
+{rng}
+<button class="w-8 rounded bg-blue-500 text-white hover:bg-blue-600" on:click={play}>Play</button>
+
+<h2>Local temporal dependencies from RSA.</h2>
+<b>Hover</b>
+to see unscrambled correlation.
+<aside class="sticky top-8">Spikes were averaged over 180 trials, and correlated between neurons.</aside>
 
 <div class="float-right"><Legend title="Spearman r" minmax={[-0.5, 0.5]} cmap={d3.interpolateRdBu} legendAnchor="end" /></div>
 
@@ -95,17 +102,20 @@
   </div>
 
   <div>
-    <span>Scrambled Corr.</span>
     <div class="group relative">
+      <span class="group-hover:invisible">Scrambled Corr.</span>
       <PngViewer data={corr?.scrcorr()} diverging header={{ width: 600, height: 600 }} cmap={d3.interpolateRdBu} minmax={[-0.5, 0.5]} scale={1} axes={{ x: true }} xlabel="Scrambled" />
       <div class="absolute top-0 left-0 z-50 hidden group-hover:inline">
+        <span>Unscrambled Corr.</span>
         <PngViewer data={corr?.unscramcorrself()} scale={1} diverging header={{ width: 600, height: 600 }} cmap={d3.interpolateRdBu} axes={{}} minmax={[-0.5, 0.5]} />
       </div>
     </div>
   </div>
 </div>
 
-<h2>Unscramble</h2>
+<h2>Cross-correlation and unscrambled using argmax from crosscorrelation</h2>
+<b>Hover</b>
+to see unscrambled correlation.
 
 <IntersectObs>
   <div class="group relative flex gap-x-5">
@@ -117,16 +127,15 @@
   </div>
 </IntersectObs>
 
-<h2>Argmax Correlation</h2>
+<h2>Argmax Correlation shows the most similar representation to that from sequential changing every ~3 frames.</h2>
 <div class="font-medium">
-  <div class="ml-4">Sorted max correlated sequential frame. →</div>
+  <div class="ml-4">Sorted argmax correlation to sequential frame. →</div>
   ↓ Scrambled frame.
 </div>
-<IntersectObs>
-  <!-- <Table data={corr?.os()} /> -->
-</IntersectObs>
 
-<img src={pngs[rng]} />
-<input type="range" min="0" max="199" bind:value={rng} />
-{rng}
-<button on:click={play}>Hi</button>
+<aside class="sticky top-8 bg-neutral-50">
+  Spikes averaged across all trials. Then, Spearman-correlate sequential/scrambled pairs and identify top-20 maximally correlated sequential frame given a scrambled frame.
+</aside>
+<IntersectObs>
+  <Table data={corr?.os()} />
+</IntersectObs>
