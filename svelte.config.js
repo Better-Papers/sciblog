@@ -29,6 +29,7 @@ const config = {
       },
       assetsInclude: ["src/**/*.csv"],
     },
+
     appDir: "internal",
     prerender: { default: true },
   },

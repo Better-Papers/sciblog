@@ -32,10 +32,10 @@
     {:else}
       <p class="text-3xl font-bold">{metadata.title ?? "Untitled"}</p>
       {#if metadata.subtitle ?? false}
-        <p class="text-lg font-medium">{metadata.subtitle}</p>
+        <p class="font-light">{metadata.subtitle}</p>
       {/if}
       {#if metadata.date ?? false}
-        <p class="text-lg">{metadata.date}</p>
+        <p class="mt-0.5 text-sm font-light">{metadata.date}</p>
       {/if}
     {/if}
 

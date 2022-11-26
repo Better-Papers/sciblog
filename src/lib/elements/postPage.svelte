@@ -75,7 +75,7 @@
 <div id={`post-${uid}`}>
   <PostHeader {metadata} {citation} {arrow} />
   <div class="h-6" />
-  <article class="prose max-w-none leading-normal md:leading-relaxed">
+  <article class="prose prose-sm max-w-none leading-normal md:leading-relaxed">
     <svelte:component this={post.post.default} />
   </article>
 </div>
