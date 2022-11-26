@@ -4,6 +4,7 @@
   import { factorial, runNode } from "$src/lib/utils";
   import * as Plot from "@observablehq/plot";
   import * as d3 from "d3";
+  import { interpolateRdYlBu } from "d3";
   import katex from "katex";
   import { clone, flatten } from "lodash-es";
   import { onMount } from "svelte";
@@ -63,7 +64,6 @@
   }
 
   const cells = Array.from({ length: 32 }, (_, i) => 5000 + 2500 * i);
-  let plotUndiscern;
 
   function genVals() {
     const varyCells = cells.map((nCells) => calc(1, nCells, { captureEff }));
@@ -74,7 +74,7 @@
     const proportions: typeof varyCells = [];
     for (const v of varyCells) {
       for (const s of ["singletGEM", "multipletGEM", "singletCell", "multipletCell"]) {
-        proportions.push({ ...v, proportion: v[s], type: s });
+        proportions.push({ ...v, proportion: v[s], type: s, isCell: s.includes("Cell") });
       }
     }
     return { varyCells, varyHashes, minCost, varyRpc: flatten(varyRpc), proportions };
@@ -85,7 +85,7 @@
     // while (div.firstChild) div.removeChild(div.firstChild);
 
     d3.selectAll('[aria-label="x-axis"] > text').attr("dy", "0.4em"); // move x-axis labels down a bit
-    d3.selectAll('[aria-label="y-axis"] > text').attr("dy", "-1.5em"); // move y-axis labels up a bit
+    d3.selectAll('[aria-label="y-axis"] > text').attr("dy", "-1em"); // move y-axis labels up a bit
   };
 
   function plotCostPerCell(svg: Node) {
@@ -96,7 +96,7 @@
 
       marks: [
         Plot.line(varyRpc, { x: "nCells", y: "costPerCell", z: "readsPerCell", stroke: "readsPerCell", curve: "basis" }),
-        Plot.text(varyRpc, Plot.selectLast({ x: "nCells", y: "costPerCell", z: "readsPerCell", text: "readsPerCell", textAnchor: "start", dx: 3 })),
+        Plot.text(varyRpc, Plot.selectLast({ x: "nCells", y: "costPerCell", z: "readsPerCell", text: (d) => d.readsPerCell.toLocaleString("en-US") + " reads per cell", textAnchor: "start", dx: 3 })),
         Plot.dot(minCost, { x: "nCells", y: "costPerCell", z: "readsPerCell", fill: "readsPerCell" }),
         Plot.text(minCost, { x: "nCells", y: "costPerCell", z: "readsPerCell", text: "costPerCellStr", fontSize: 10, dy: -12 }),
       ],
@@ -110,7 +110,7 @@
     Plot.plot({
       color: { type: "diverging", pivot: 0.2, scheme: "BuRd" },
       x: { grid: true, label: "Number of loaded cells per lane →" },
-      y: { grid: true, label: "↑ Number of singlet cells" },
+      y: { grid: true, label: "↑ Number of recovered singlets" },
       marks: [Plot.line(varyRpc, { x: "nCells", y: "nSingleCell", filter: (v) => v.readsPerCell === 20000, curve: "basis" })],
       style,
       insetBottom: 12,
@@ -125,8 +125,11 @@
       y: { type: "log", grid: true, label: "↑ Proportion of undiscernable GEMs", tickFormat: "5f" },
 
       marks: [
-        Plot.line(varyHashes, { x: "nCells", y: "undiscernableGEM", z: "nHash", stroke: "nHash", curve: "basis", title: "nHash" }),
-        Plot.text(varyHashes, Plot.selectLast({ x: "nCells", y: "undiscernableGEM", z: "nHash", text: "nHash", textAnchor: "start", dx: 3 })),
+        Plot.line(varyHashes, { x: "nCells", y: "undiscernableGEM", z: "nHash", stroke: "nHash", curve: "basis", title: (d) => (d.nHash === 1 ? "No hashing" : toString(d.nHash) + " hashes") }),
+        Plot.text(
+          varyHashes,
+          Plot.selectLast({ x: "nCells", y: "undiscernableGEM", z: "nHash", text: (d) => (d.nHash === 1 ? "No hashing" : toString(d.nHash) + " hashes"), textAnchor: "start", dx: 3 })
+        ),
         Plot.ruleY([0.02]),
       ],
       style,
@@ -140,12 +143,24 @@
       width: 250,
       height: 250,
       color: { type: "diverging", pivot: 0.2, scheme: "BuRd" },
-      x: { label: "Number of loaded cells per lane →" },
+      x: { label: "Number of loaded cells →" },
       y: { grid: true, label: "↑ Total cost (USD)", tickFormat: "$,.2f" },
 
       marks: [
         Plot.line(varyRpc, { x: "nCells", y: "totalCost", z: "readsPerCell", stroke: "readsPerCell", curve: "basis" }),
-        Plot.text(varyRpc, Plot.selectLast({ x: "nCells", y: "totalCost", z: "readsPerCell", text: "readsPerCell", textAnchor: "start", dx: 6, fontSize: 11, fontWeight: 400 })),
+        Plot.text(
+          varyRpc,
+          Plot.selectLast({
+            x: "nCells",
+            y: "totalCost",
+            z: "readsPerCell",
+            text: (d) => d.readsPerCell.toLocaleString("en-US") + " rpc",
+            textAnchor: "start",
+            dx: 6,
+            fontSize: 10,
+            fontWeight: 400,
+          })
+        ),
       ],
       style,
       insetBottom: 12,
@@ -164,25 +179,26 @@
     }
 
     Plot.plot({
-      height: 240,
-      width: 250,
+      height: 270,
+      width: 280,
+      color: { scheme: "PiYG" },
       // padding: 0,
       x: { axis: "top", label: "Hash of Cell 1" },
       y: { label: "Hash of Cell 2" },
       marks: [Plot.cell(combi, { x: "x", y: "y", fill: "isSame", inset: 0.5, rx: 26 }), Plot.text(combi, { x: "x", y: "y", text: "xy" })],
-      style,
+      style: { ...style, fontSize: 10 },
       svg,
     });
   }
 
   function plotProportions(node: Node) {
     Plot.plot({
-      color: { scheme: "BuRd" },
-      x: { label: "Number of loaded cells per lane →" },
+      color: { scheme: "RdBu" },
+      x: { label: "Number of loaded cells →" },
       y: { grid: true, label: "↑ Proportions", domain: [0, 1] },
       marks: [
-        Plot.line(proportions, { x: "nCells", y: "proportion", z: "type", stroke: "type" }),
-        Plot.text(proportions, Plot.selectLast({ x: "nCells", y: "proportion", z: "type", text: "type", textAnchor: "start", dx: 3 })),
+        Plot.line(proportions, { x: "nCells", y: "proportion", z: "type", stroke: "isCell" }),
+        Plot.text(proportions, Plot.selectLast({ x: "nCells", y: "proportion", z: "type", text: "type", textAnchor: "start", dx: 3, fontSize: 11 })),
       ],
       style,
       insetBottom: 12,
@@ -200,15 +216,18 @@
     <input type="number" class="rounded py-0.5 px-2 " bind:value={captureEff} min="0" step="0.01" max="1" />
   </div> -->
 
-<aside class="fixed top-48 right-2 flex flex-col z-50 bg-slate-50/90 backdrop-blur-lg">
-  <Input min="0" max="1" step="0.01" label="Capture Efficiency" bind:value={captureEff} />
-  <Input min="0" step="100" label="Cost per 10x lane" bind:value={cost10x} />
-  <Input min="0" step="100" label="Cost per 1M reads" bind:value={costPer1MRead} />
-</aside>
-
 <div bind:this={div} class="flex flex-col gap-y-4" />
 
-<h2>Expected number of recovered singlets</h2>
+<h2 class="mt-3">Expected number of recovered singlets</h2>
+
+<aside class="sticky top-16 z-50 bg-slate-50/90 backdrop-blur-lg">
+  <div class="flex flex-col items-end w-24">
+    <Input min="0" max="1" step="0.01" label="Capture Efficiency" bind:value={captureEff} />
+    <Input min="0" step="100" label="Cost per 10x lane" bind:value={cost10x} />
+    <Input min="0" step="0.1" label="Cost per 1M reads" bind:value={costPer1MRead} />
+  </div>
+</aside>
+
 <p>
   First, we assume that <b>{100 * captureEff}%</b>
   of cells are captured into droplets. On average, for a given GEM bead, there are
@@ -218,8 +237,8 @@
   to calculate the expected recovery of singlets.
 </p>
 
-<h4>Proportion of cells in multiplet droplets scale faster than GEMs</h4>
 <figure class="mt-3">
+  <h4 class="pb-1.5">Proportion of cells in multiplet droplets scale faster than GEMs</h4>
   <svg use:runNode={plotProportions} />
 </figure>
 
@@ -249,16 +268,19 @@
   </figure>
 </aside>
 
-<h4>Hashing reduces undiscernable multiplets</h4>
-<div>
+<figure>
+  <h4 class="pb-1.5">Hashing reduces undiscernable multiplets</h4>
   <PlotElem
     options={{
-      color: { scheme: "blues" },
+      color: { interpolate: (t) => d3.interpolatePuBu(0.7 * t + 0.3) },
       x: { label: "Number of loaded cells per lane →" },
       y: { type: "log", grid: true, label: "↑ Proportion of undiscernable GEMs", tickFormat: "5f" },
       marks: [
         Plot.line(varyHashes, { x: "nCells", y: "undiscernableGEM", z: "nHash", stroke: "nHash", curve: "basis", title: "nHash" }),
-        Plot.text(varyHashes, Plot.selectLast({ x: "nCells", y: "undiscernableGEM", z: "nHash", text: "nHash", textAnchor: "start", dx: 3 })),
+        Plot.text(
+          varyHashes,
+          Plot.selectLast({ x: "nCells", y: "undiscernableGEM", z: "nHash", text: (d) => (d.nHash === 1 ? "No hashing" : `${d.nHash} hashes`), textAnchor: "start", dx: 3, fontSize: 11 })
+        ),
         Plot.ruleY([0.02]),
       ],
       insetBottom: 12,
@@ -266,12 +288,19 @@
     props={{ varyHashes }}
     update={(obj, props) => console.log(obj)}
   />
-</div>
+</figure>
 
 <h2>Costs</h2>
 <p>
   With the ability to clearly detect most of the multiplets, we can load more cells into a single lane. However, as we load more cells, the proportion of discarded reads scales as the number of
   multiplet cells in the first figure. With constant sequencing cost, there is a point in which the sequencing cost dominates and we do not get any more savings from loading more cells.
+</p>
+<p>
+  We assume that a lane of Chromium costs $
+  <b>{cost10x.toLocaleString("en-US")}</b>
+  and that sequencing costs $
+  <b>{costPer1MRead.toFixed(2)}</b>
+  per million reads.
 </p>
 
 <aside>
@@ -279,8 +308,9 @@
     <svg class="align-center" use:runNode={plotCost} />
   </figure>
 </aside>
-<h3>Superloading is constrained by the cost of discarded reads</h3>
-<figure>
+
+<figure class="mt-3">
+  <h4 class="pb-1.5">Superloading is constrained by the cost of discarded reads</h4>
   <svg use:runNode={plotCostPerCell} />
 </figure>
 
@@ -299,5 +329,9 @@
 
   svg {
     @apply overflow-visible;
+  }
+
+  b {
+    @apply text-sky-800;
   }
 </style>
