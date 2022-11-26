@@ -9,7 +9,6 @@ import rehypeToc from "rehype-toc";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeFigure from "rehype-figure";
 import rehypeKatex from "rehype-katex-svelte";
-import path from "path";
 import remarkGfm from "remark-gfm";
 import rehypeLazyLoad from "rehype-plugin-image-native-lazy-loading";
 import relativeImages from "mdsvex-relative-images";

@@ -10,8 +10,8 @@ export type Post = {
   raw: string;
 };
 
-const raw = import.meta.globEager(`$posts/**/*.md`, { as: "raw" });
-const processed = import.meta.globEager(`$posts/**/*.md`);
+const raw = import.meta.glob(`$posts/**/*.md`, { eager: true, as: "raw" });
+const processed = import.meta.glob(`$posts/**/*.md`, { eager: true });
 
 export const posts = Object.keys(processed)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

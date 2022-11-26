@@ -15,7 +15,7 @@
     </div>
   {/if}
 
-  <div class="flex flex-col leading-relaxed">
+  <div class="flex flex-col">
     {#if citation}
       <p class:text-2xl={arrow} class="text-xl font-medium">{metadata.title}</p>
 
@@ -32,10 +32,10 @@
     {:else}
       <p class="text-3xl font-bold">{metadata.title ?? "Untitled"}</p>
       {#if metadata.subtitle ?? false}
-        <p class="font-light">{metadata.subtitle}</p>
+        <p class="text-lg">{metadata.subtitle}</p>
       {/if}
       {#if metadata.date ?? false}
-        <p class="mt-0.5 text-sm font-light">{metadata.date}</p>
+        <p class="font-light">{metadata.date}</p>
       {/if}
     {/if}
 
@@ -43,7 +43,7 @@
       <p class="mt-0.5 text-sm font-medium text-gray-700">
         Tags:
         {#each metadata.tags as tag}
-          <a class="text-neutral-800 hover:text-neutral-600" sveltekit:prefetch href={`/tags/${tag}`}>{tag}</a>
+          <a class="text-neutral-800 hover:text-neutral-600" data-sveltekit-prefetch href={`/tags/${tag}`}>{tag}</a>
         {/each}
       </p>{/if}
   </div>

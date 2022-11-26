@@ -5,3 +5,11 @@ export function genUid() {
 export function runNode(node: Node, f: (node: Node) => unknown): SvelteActionReturnType {
   f(node);
 }
+
+export function factorial(n: number) {
+  let result = 1;
+  for (let i = 1; i <= n; i++) {
+    result *= i;
+  }
+  return result;
+}
