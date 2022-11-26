@@ -1,15 +1,25 @@
 <script lang="ts">
+  import Input from "$src/lib/components/input.svelte";
+  import { runNode } from "$src/lib/utils";
   import * as Plot from "@observablehq/plot";
   import Poisson from "@stdlib/stats/base/dists/poisson";
+  import * as d3 from "d3";
+  import katex from "katex";
   import { clone, flatten } from "lodash-es";
   import { onMount } from "svelte";
 
   let div: HTMLDivElement;
-
   let gems = 1e5;
   let cost10x = 1500;
   let costPer1MRead = (6000 / 2e9) * 1e6;
   let captureEff = 0.5;
+
+  let varyHashes: ReturnType<typeof genVals>["varyHashes"];
+  let varyRpc: ReturnType<typeof genVals>["varyRpc"];
+  let proportions: ReturnType<typeof genVals>["proportions"];
+  let minCost: ReturnType<typeof genVals>["minCost"];
+
+  const style = { background: "transparent", fontSize: 11 };
 
   function calc(nHash: number, cells: number, options: { lanes?: number; readsPerCell?: number; captureEff?: number } = {}) {
     const { lanes = 1, readsPerCell = 2e4, captureEff = 0.5 } = options;
@@ -49,6 +59,7 @@
   }
 
   const cells = Array.from({ length: 32 }, (_, i) => 5000 + 2500 * i);
+  let plotUndiscern;
 
   function genVals() {
     const varyCells = cells.map((nCells) => calc(1, nCells, { captureEff }));
@@ -65,205 +76,210 @@
     return { varyCells, varyHashes, minCost, varyRpc: flatten(varyRpc), proportions };
   }
 
-  function render() {
-    if (!div) return;
-    while (div.firstChild) div.removeChild(div.firstChild);
-    const { varyHashes, varyRpc, proportions, minCost } = genVals();
-    div.appendChild(
-      Plot.plot({
-        color: {
-          scheme: "BuRd",
-        },
-        y: {
-          grid: true,
-          label: "↑ Proportions",
-          //   tickFormat: ".3f",
-          domain: [0, 1],
-        },
-        x: {
-          label: "Number of loaded cells per lane →",
-        },
+  const render = () => {
+    // if (!div) return;
+    // while (div.firstChild) div.removeChild(div.firstChild);
 
-        marks: [
-          Plot.line(proportions, { x: "nCells", y: "proportion", z: "type", stroke: "type" }),
-          Plot.text(
-            proportions,
-            Plot.selectLast({
-              x: "nCells",
-              y: "proportion",
-              z: "type",
-              text: "type",
-              textAnchor: "start",
-              dx: 3,
-            })
-          ),
-        ],
-        style: {
-          background: "transparent",
-        },
-        insetBottom: 12,
-      })
-    );
+    d3.selectAll('[aria-label="x-axis"] > text').attr("dy", "0.4em"); // move x-axis labels down a bit
+    d3.selectAll('[aria-label="y-axis"] > text').attr("dy", "-1.5em"); // move y-axis labels up a bit
+  };
 
-    div.appendChild(
-      Plot.plot({
-        color: {
-          scheme: "blues",
-        },
-        y: {
-          type: "log",
-          grid: true,
-          label: "↑ Proportion of undiscernable GEMs",
-          tickFormat: "5f",
-        },
-        x: {
-          label: "Number of loaded cells per lane →",
-        },
+  function plotCostPerCell(svg: Node) {
+    Plot.plot({
+      color: { type: "diverging", pivot: 0.2, scheme: "BuRd" },
+      x: { label: "Number of loaded cells per lane →" },
+      y: { grid: true, label: "↑ Cost per singlet cell (USD)", tickFormat: "$,.2f" },
 
-        marks: [
-          Plot.line(varyHashes, { x: "nCells", y: "undiscernableGEM", z: "nHash", stroke: "nHash", curve: "basis" }),
-          Plot.text(
-            varyHashes,
-            Plot.selectLast({
-              x: "nCells",
-              y: "undiscernableGEM",
-              z: "nHash",
-              text: "nHash",
-              textAnchor: "start",
-              dx: 3,
-            })
-          ),
-          Plot.ruleY([0.02]),
-        ],
-        style: {
-          background: "transparent",
-        },
-        insetBottom: 12,
-      })
-    );
+      marks: [
+        Plot.line(varyRpc, { x: "nCells", y: "costPerCell", z: "readsPerCell", stroke: "readsPerCell", curve: "basis" }),
+        Plot.text(varyRpc, Plot.selectLast({ x: "nCells", y: "costPerCell", z: "readsPerCell", text: "readsPerCell", textAnchor: "start", dx: 3 })),
+        Plot.dot(minCost, { x: "nCells", y: "costPerCell", z: "readsPerCell", fill: "readsPerCell" }),
+        Plot.text(minCost, { x: "nCells", y: "costPerCell", z: "readsPerCell", text: "costPerCellStr", fontSize: 10, dy: -12 }),
+      ],
+      style,
+      insetBottom: 12,
+      svg,
+    });
+  }
 
-    div.appendChild(
-      Plot.plot({
-        color: {
-          type: "diverging",
-          pivot: 0.2,
-          scheme: "BuRd",
-        },
-        y: {
-          grid: true,
-          label: "↑ Cost per singlet cell (USD)",
-          tickFormat: "$,.2f",
-          //   domain: [0, 0.5],
-        },
-        x: {
-          label: "Number of loaded cells per lane →",
-        },
+  function plotSinglets(svg: Node) {
+    Plot.plot({
+      color: { type: "diverging", pivot: 0.2, scheme: "BuRd" },
+      y: { grid: true, label: "↑ Number of singlet cells" },
+      x: { grid: true, label: "Number of loaded cells per lane →" },
+      marks: [Plot.line(varyRpc, { x: "nCells", y: "nSingleCell", filter: (v) => v.readsPerCell === 20000, curve: "basis" })],
+      style,
+      insetBottom: 12,
+      svg,
+    });
+  }
 
-        marks: [
-          Plot.line(varyRpc, { x: "nCells", y: "costPerCell", z: "readsPerCell", stroke: "readsPerCell", curve: "basis" }),
-          Plot.text(
-            varyRpc,
-            Plot.selectLast({
-              x: "nCells",
-              y: "costPerCell",
-              z: "readsPerCell",
-              text: "readsPerCell",
-              textAnchor: "start",
-              dx: 3,
-            })
-          ),
-          Plot.dot(minCost, { x: "nCells", y: "costPerCell", z: "readsPerCell", fill: "readsPerCell" }),
-          Plot.text(minCost, { x: "nCells", y: "costPerCell", z: "readsPerCell", text: "costPerCellStr", fontSize: 10, dy: -12 }),
-        ],
-        style: {
-          background: "transparent",
-        },
-        insetBottom: 12,
-      })
-    );
+  function plotUndiscerned(svg: Node) {
+    Plot.plot({
+      color: { scheme: "blues" },
+      x: { label: "Number of loaded cells per lane →" },
+      y: { type: "log", grid: true, label: "↑ Proportion of undiscernable GEMs", tickFormat: "5f" },
 
-    div.appendChild(
-      Plot.plot({
-        color: {
-          type: "diverging",
-          pivot: 0.2,
-          scheme: "BuRd",
-        },
-        y: {
-          grid: true,
-          label: "↑ Total cost (USD)",
-          tickFormat: "$,.2f",
-          //   domain: [0, 0.5],
-        },
-        x: {
-          label: "Number of loaded cells per lane →",
-        },
+      marks: [
+        Plot.line(varyHashes, { x: "nCells", y: "undiscernableGEM", z: "nHash", stroke: "nHash", curve: "basis", title: "nHash" }),
+        Plot.text(varyHashes, Plot.selectLast({ x: "nCells", y: "undiscernableGEM", z: "nHash", text: "nHash", textAnchor: "start", dx: 3 })),
+        Plot.ruleY([0.02]),
+      ],
+      style,
+      insetBottom: 12,
+      svg,
+    });
+  }
 
-        marks: [
-          Plot.line(varyRpc, { x: "nCells", y: "totalCost", z: "readsPerCell", stroke: "readsPerCell", curve: "basis" }),
-          Plot.text(
-            varyRpc,
-            Plot.selectLast({
-              x: "nCells",
-              y: "totalCost",
-              z: "readsPerCell",
-              text: "readsPerCell",
-              textAnchor: "start",
-              dx: 3,
-            })
-          ),
-          //   Plot.dot(minCost, { x: "nCells", y: "costPerCell", z: "readsPerCell", fill: "readsPerCell" }),
-          //   Plot.text(minCost, { x: "nCells", y: "costPerCell", z: "readsPerCell", text: "costPerCellStr", fontSize: 10, dy: -12 }),
-        ],
-        style: {
-          background: "transparent",
-        },
-        insetBottom: 12,
-      })
-    );
+  function plotCost(svg: Node) {
+    Plot.plot({
+      width: 250,
+      height: 250,
+      color: { type: "diverging", pivot: 0.2, scheme: "BuRd" },
+      x: { label: "Number of loaded cells per lane →" },
+      y: { grid: true, label: "↑ Total cost (USD)", tickFormat: "$,.2f" },
 
-    div.appendChild(
-      Plot.plot({
-        color: {
-          type: "diverging",
-          pivot: 0.2,
-          scheme: "BuRd",
-        },
-        y: {
-          grid: true,
-          label: "↑ Number of singlet cells",
-        },
-        x: {
-          grid: true,
-          label: "Number of loaded cells per lane →",
-        },
+      marks: [
+        Plot.line(varyRpc, { x: "nCells", y: "totalCost", z: "readsPerCell", stroke: "readsPerCell", curve: "basis" }),
+        Plot.text(varyRpc, Plot.selectLast({ x: "nCells", y: "totalCost", z: "readsPerCell", text: "readsPerCell", textAnchor: "start", dx: 6, fontSize: 11, fontWeight: 400 })),
+      ],
+      style,
+      insetBottom: 12,
+      svg,
+    });
+  }
 
-        marks: [Plot.line(varyRpc, { x: "nCells", y: "nSingleCell", filter: (v) => v.readsPerCell === 20000, curve: "basis" })],
-        style: {
-          background: "transparent",
-        },
-        insetBottom: 12,
-      })
-    );
+  function plotDoublets(svg: Node) {
+    const combi = [];
+    for (let i = 1; i < 9; i++) {
+      for (let j = 1; j < 9; j++) {
+        const x = (i + 9).toString(36).toUpperCase();
+        const y = (j + 9).toString(36).toUpperCase();
+        combi.push({ x, y, xy: x + y, isSame: i === j });
+      }
+    }
+
+    Plot.plot({
+      height: 240,
+      width: 250,
+      // padding: 0,
+      x: { axis: "top", label: "Hash of Cell 1" },
+      y: { label: "Hash of Cell 2" },
+      marks: [Plot.cell(combi, { x: "x", y: "y", fill: "isSame", inset: 0.5, rx: 26 }), Plot.text(combi, { x: "x", y: "y", text: "xy" })],
+      style,
+      svg,
+    });
+  }
+
+  function plotProportions(node: Node) {
+    Plot.plot({
+      color: { scheme: "BuRd" },
+      x: { label: "Number of loaded cells per lane →" },
+      y: { grid: true, label: "↑ Proportions", domain: [0, 1] },
+      marks: [
+        Plot.line(proportions, { x: "nCells", y: "proportion", z: "type", stroke: "type" }),
+        Plot.text(proportions, Plot.selectLast({ x: "nCells", y: "proportion", z: "type", text: "type", textAnchor: "start", dx: 3 })),
+      ],
+      style,
+      insetBottom: 12,
+      svg: node,
+    });
   }
 
   onMount(render);
-  $: if (gems || cost10x || costPer1MRead || captureEff) render();
+
+  $: if (gems || cost10x || costPer1MRead || captureEff) ({ varyHashes, varyRpc, proportions, minCost } = genVals());
 </script>
 
-<aside class="">
-  <input type="number" bind:value={captureEff} min="0" step="0.01" max="1" />
+<!-- <div class="sticky flex items-center gap-x-2">
+    <span>Capture Efficiency</span>
+    <input type="number" class="rounded py-0.5 px-2 " bind:value={captureEff} min="0" step="0.01" max="1" />
+  </div> -->
+
+<aside class="fixed top-48 right-2 flex flex-col z-50 bg-slate-50/90 backdrop-blur-lg">
+  <Input min="0" max="1" step="0.01" label="Capture Efficiency" bind:value={captureEff} />
+  <Input min="0" step="100" label="Cost per 10x lane" bind:value={cost10x} />
+  <Input min="0" step="100" label="Cost per 1M reads" bind:value={costPer1MRead} />
 </aside>
 
-<div bind:this={div} class="flex flex-col gap-y-4 overflow-visible" />
+<div bind:this={div} class="flex flex-col gap-y-4" />
+
+<h2>Expected number of recovered singlets</h2>
+<p>
+  First, we assume that <b>{100 * captureEff}%</b>
+  of cells are captured into droplets. On average, for a given GEM bead, there are
+  {@html katex.renderToString("λ = \\frac{n_\\mathrm{cell}}{n_\\mathrm{GEM}}", { throwOnError: false })} cells and is distributed as a Poisson distribution. However, we care about cells, not empty droplets.
+  Therefore, we're going to ignore all empty droplets and use the
+  <a href="https://en.wikipedia.org/wiki/Zero-truncated_Poisson_distribution">zero-truncated Poisson distribution</a>
+  to calculate the expected recovery of singlets.
+</p>
+
+<h4>Proportion of cells in multiplet droplets scale faster than GEMs</h4>
+<figure class="mt-3">
+  <svg use:runNode={plotProportions} />
+</figure>
+
+<p>
+  Note that as the proportion of multiplet <em>GEMs</em>
+  increases, the proportion of
+  <em>cells</em>
+  in multiplet droplets increases more quickly. This is due to the fact that a multiplet takes up multiple cells, and we must normalize to the
+  <em>expected value</em>
+  and not the probability of this distribution.
+</p>
+
+<figure class="mt-5 ml-1.5">
+  <svg use:runNode={plotSinglets} />
+</figure>
 
 <aside>
-  <input type="number" bind:value={cost10x} min="0" step="100" />
-  <input type="number" bind:value={costPer1MRead} min="0" step="0.1" />
+  <figure>
+    <div class="w-full flex">
+      <svg class="align-center" use:runNode={plotDoublets} />
+    </div>
+    <figcaption>
+      For doublets, we expect
+      {@html katex.renderToString(String.raw`\frac{1}{n^2}(n^2 - n) = 1 - \frac{1}{n}`, { displayMode: true })}
+      undiscernable doublets for a given cell, where {@html katex.renderToString("n")} is the number of hashes. This pattern continues with higher-order multiplets.
+    </figcaption>
+  </figure>
 </aside>
 
+<h4>Hashing reduces undiscernable multiplets</h4>
+<div>
+  <svg use:runNode={plotUndiscerned} />
+</div>
+
+<h2>Costs</h2>
+<p>
+  With the ability to clearly detect most of the multiplets, we can load more cells into a single lane. However, as we load more cells, the proportion of discarded reads scales as the number of
+  multiplet cells in the first figure. With constant sequencing cost, there is a point in which the sequencing cost dominates and we do not get any more savings from loading more cells.
+</p>
+
+<aside>
+  <figure class="mt-16 w-full flex">
+    <svg class="align-center" use:runNode={plotCost} />
+  </figure>
+</aside>
+<h3>Superloading is constrained by the cost of discarded reads</h3>
+<figure>
+  <svg use:runNode={plotCostPerCell} />
+</figure>
+
+<p>
+  At higher cell loads, we must turn to
+  <a href="https://www.nature.com/articles/s41592-021-01153-z">scifi-RNA-Seq</a>
+  which, instead of introducing hashing reads, avoids discarding reads by hashing the actual polyA+ RNA molecule.
+</p>
+
 <style lang="postcss">
-  div :global(*) {
+  div :global(*),
+  aside :global(*),
+  figure :global(*) {
+    @apply overflow-visible;
+  }
+
+  svg {
     @apply overflow-visible;
   }
 </style>
