@@ -10,6 +10,10 @@
       "Segoe UI Emoji";
   }
 
+  .katex {
+    font-size: 1.1em;
+  }
+
   .prose h2,
   .prose h3 {
     @apply font-semibold text-gray-800;
@@ -29,7 +33,7 @@
   }
 
   .prose aside {
-    @apply font-serif text-[0.9375rem] leading-4;
+    @apply leading-4;
   }
 
   .prose :where(blockquote p:last-of-type):not(:where([class~="not-prose"] *))::after {
