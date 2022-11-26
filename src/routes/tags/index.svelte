@@ -12,7 +12,7 @@
 
 <div class="mt-6 text-xl">
   {#each Array.from(tags) as tag}
-    <a href={`/tags/${tag}`} sveltekit:prefetch class="prose flex flex-col gap-y-6 divide-y-2">
+    <a href={`/tags/${tag}`} data-sveltekit-prefetch class="prose flex flex-col gap-y-6 divide-y-2">
       <p class="text-lg font-medium">{tag}</p>
     </a>
   {/each}

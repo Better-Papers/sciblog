@@ -1,7 +1,6 @@
 import { mdsvex } from "mdsvex";
 import mdsvexConfig from "./mdsvex.config.js";
 import adapter from "@sveltejs/adapter-static";
-import path from "path";
 import preprocess from "svelte-preprocess";
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -19,19 +18,7 @@ const config = {
       assets: "build",
       fallback: null,
     }),
-    vite: {
-      resolve: {
-        alias: {
-          $src: path.resolve("./src"),
-          $posts: path.resolve("./src/posts"),
-          $comps: path.resolve("./src/components"),
-        },
-      },
-      assetsInclude: ["src/**/*.csv"],
-    },
-
     appDir: "internal",
-    prerender: { default: true },
   },
 };
 
