@@ -1,8 +1,8 @@
 <script lang="ts">
   import Input from "$src/lib/components/input.svelte";
-  import { runNode } from "$src/lib/utils";
+  import PlotElem from "$src/lib/components/plotElem.svelte";
+  import { factorial, runNode } from "$src/lib/utils";
   import * as Plot from "@observablehq/plot";
-  import Poisson from "@stdlib/stats/base/dists/poisson";
   import * as d3 from "d3";
   import katex from "katex";
   import { clone, flatten } from "lodash-es";
@@ -19,19 +19,23 @@
   let proportions: ReturnType<typeof genVals>["proportions"];
   let minCost: ReturnType<typeof genVals>["minCost"];
 
-  const style = { background: "transparent", fontSize: 11 };
+  const style = { background: "transparent", fontSize: 12 };
+
+  function pmf(x: number, λ: number) {
+    return (Math.pow(λ, x) * Math.exp(-λ)) / factorial(x);
+  }
 
   function calc(nHash: number, cells: number, options: { lanes?: number; readsPerCell?: number; captureEff?: number } = {}) {
     const { lanes = 1, readsPerCell = 2e4, captureEff = 0.5 } = options;
     const effCells = cells * captureEff;
     const λ = effCells / (gems * lanes);
-    const zero = Poisson.pmf(0, λ);
+    const zero = pmf(0, λ);
     const nonzero = 1 - zero;
 
     // Zero-truncated Poisson
     // https://en.wikipedia.org/wiki/Zero-truncated_Poisson_distribution
     const expected = λ / (1 - Math.exp(-λ));
-    const [one, two, three] = [1, 2, 3].map((n) => Poisson.pmf(n, λ) / nonzero);
+    const [one, two, three] = [1, 2, 3].map((n) => pmf(n, λ) / nonzero);
     // The support is positive so the expectation is a sum of positive numbers.
     const moreThan4 = expected - one - 2 * two - 3 * three;
 
@@ -105,8 +109,8 @@
   function plotSinglets(svg: Node) {
     Plot.plot({
       color: { type: "diverging", pivot: 0.2, scheme: "BuRd" },
-      y: { grid: true, label: "↑ Number of singlet cells" },
       x: { grid: true, label: "Number of loaded cells per lane →" },
+      y: { grid: true, label: "↑ Number of singlet cells" },
       marks: [Plot.line(varyRpc, { x: "nCells", y: "nSingleCell", filter: (v) => v.readsPerCell === 20000, curve: "basis" })],
       style,
       insetBottom: 12,
@@ -247,7 +251,21 @@
 
 <h4>Hashing reduces undiscernable multiplets</h4>
 <div>
-  <svg use:runNode={plotUndiscerned} />
+  <PlotElem
+    options={{
+      color: { scheme: "blues" },
+      x: { label: "Number of loaded cells per lane →" },
+      y: { type: "log", grid: true, label: "↑ Proportion of undiscernable GEMs", tickFormat: "5f" },
+      marks: [
+        Plot.line(varyHashes, { x: "nCells", y: "undiscernableGEM", z: "nHash", stroke: "nHash", curve: "basis", title: "nHash" }),
+        Plot.text(varyHashes, Plot.selectLast({ x: "nCells", y: "undiscernableGEM", z: "nHash", text: "nHash", textAnchor: "start", dx: 3 })),
+        Plot.ruleY([0.02]),
+      ],
+      insetBottom: 12,
+    }}
+    props={{ varyHashes }}
+    update={(obj, props) => console.log(obj)}
+  />
 </div>
 
 <h2>Costs</h2>
