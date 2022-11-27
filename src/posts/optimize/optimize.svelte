@@ -4,17 +4,16 @@
   import { factorial, runNode } from "$src/lib/utils";
   import * as Plot from "@observablehq/plot";
   import * as d3 from "d3";
-  import { interpolateRdYlBu } from "d3";
   import katex from "katex";
-  import { clone, flatten } from "lodash-es";
+  import { clone, flatten, throttle } from "lodash-es";
   import { onMount } from "svelte";
 
-  let div: HTMLDivElement;
   let gems = 1e5;
   let cost10x = 1500;
   let costPer1MRead = (6000 / 2e9) * 1e6;
   let captureEff = 0.5;
 
+  let varyCells;
   let varyHashes: ReturnType<typeof genVals>["varyHashes"];
   let varyRpc: ReturnType<typeof genVals>["varyRpc"];
   let proportions: ReturnType<typeof genVals>["proportions"];
@@ -66,18 +65,22 @@
   const cells = Array.from({ length: 32 }, (_, i) => 5000 + 2500 * i);
 
   function genVals() {
-    const varyCells = cells.map((nCells) => calc(1, nCells, { captureEff }));
-    const varyHashes = Array.from({ length: 8 }, (_, i) => 1 + i).flatMap((nHash) => cells.map((nCells) => calc(nHash, nCells, { captureEff })));
-    const varyRpc = Array.from({ length: 3 }, (_, i) => 2e4 * (i + 1)).map((readsPerCell) => cells.map((nCells) => calc(1, nCells, { readsPerCell, captureEff })));
-    const minCost = varyRpc.map((v) => clone(v).sort((a, b) => a.costPerCell - b.costPerCell)[0]).map((v) => ({ ...v, costPerCellStr: "$" + v.costPerCell.toFixed(2) }));
+    if (captureEff <= 0 || captureEff > 1) {
+      return;
+    }
+    varyCells = cells.map((nCells) => calc(1, nCells, { captureEff }));
+    varyHashes = Array.from({ length: 8 }, (_, i) => 1 + i).flatMap((nHash) => cells.map((nCells) => calc(nHash, nCells, { captureEff })));
+    varyRpc = Array.from({ length: 3 }, (_, i) => 2e4 * (i + 1)).map((readsPerCell) => cells.map((nCells) => calc(1, nCells, { readsPerCell, captureEff })));
+    minCost = varyRpc.map((v) => clone(v).sort((a, b) => a.costPerCell - b.costPerCell)[0]).map((v) => ({ ...v, costPerCellStr: "$" + v.costPerCell.toFixed(2) }));
+    varyRpc = flatten(varyRpc);
 
-    const proportions: typeof varyCells = [];
+    proportions = [];
     for (const v of varyCells) {
       for (const s of ["singletGEM", "multipletGEM", "singletCell", "multipletCell"]) {
         proportions.push({ ...v, proportion: v[s], type: s, isCell: s.includes("Cell") });
       }
     }
-    return { varyCells, varyHashes, minCost, varyRpc: flatten(varyRpc), proportions };
+    // return { varyCells, varyHashes, minCost, varyRpc: flatten(varyRpc), proportions };
   }
 
   const render = () => {
@@ -208,21 +211,78 @@
 
   onMount(render);
 
-  $: if (gems || cost10x || costPer1MRead || captureEff) ({ varyHashes, varyRpc, proportions, minCost } = genVals());
+  $: if (gems || cost10x || costPer1MRead || captureEff) genVals();
 </script>
-
-<!-- <div class="sticky flex items-center gap-x-2">
-    <span>Capture Efficiency</span>
-    <input type="number" class="rounded py-0.5 px-2 " bind:value={captureEff} min="0" step="0.01" max="1" />
-  </div> -->
 
 <div bind:this={div} class="flex flex-col gap-y-4" />
 
+<figure>
+  <h4 class="pb-1.5">Hashing reduces undiscernable multiplets</h4>
+  <PlotElem
+    options={{
+      color: { interpolate: (t) => d3.interpolatePuBu(0.7 * t + 0.3) },
+      x: { label: "Number of loaded cells per lane →" },
+      y: { type: "log", grid: true, label: "↑ Proportion of undiscernable GEMs", tickFormat: "5f" },
+      marks: [
+        Plot.line(varyHashes, { x: "nCells", y: "undiscernableGEM", z: "nHash", stroke: "nHash", curve: "basis", title: "nHash" }),
+        Plot.text(
+          varyHashes,
+          Plot.selectLast({ x: "nCells", y: "undiscernableGEM", z: "nHash", text: (d) => (d.nHash === 1 ? "No hashing" : `${d.nHash} hashes`), textAnchor: "start", dx: 3, fontSize: 11 })
+        ),
+        Plot.ruleY([0.02]),
+      ],
+      insetBottom: 12,
+    }}
+    props={{ varyHashes }}
+    update={throttle((obj, props) => {
+      console.log(obj);
+
+      const X = props.varyHashes.map((d) => d.nCells);
+      const Y = props.varyHashes.map((d) => d.undiscernableGEM);
+      const Z = props.varyHashes.map((d) => d.nHash);
+      const zDomain = new d3.InternSet(Z);
+      const I = d3.range(X.length).filter((i) => zDomain.has(Z[i]));
+
+      const line = d3
+        .line()
+        .curve(d3.curveBasis)
+        .x((i) => obj.scales.x(X[i]))
+        .y((i) => obj.scales.y(Y[i]));
+
+      obj.scales.y.domain([d3.min(Y), d3.max(Y)]);
+
+      obj.selection
+        .select('[aria-label="y-axis"]')
+        .transition(100)
+        .call(d3.axisLeft(obj.scales.y).ticks(obj.axes.y.ticks, obj.axes.y.tickFormat).tickSizeInner(obj.axes.y.tickSize).tickSizeOuter(0).tickPadding(obj.axes.y.tickPadding));
+
+      obj.selection
+        .select('[aria-label = "line"]')
+        .selectAll("path")
+        .data(d3.group(I, (i) => Z[i]))
+        .join("path")
+        // .attr("stroke", (d) => d3.interpolatePuBu(d.nHash / 8))
+        .transition(100)
+        .attr("d", ([, I]) => line(I));
+
+      console.log(zDomain, Z, I);
+
+      obj.selection
+        .select('[aria-label = "text"]')
+        .selectAll("text")
+        .data(d3.group(I, (i) => Z[i]))
+        .join("text")
+        .transition(100)
+        .attr("transform", (d) => `translate(${obj.scales.x(X[d[1].at(-1)])},${obj.scales.y(Y[d[1].at(-1)])})`);
+    }, 16)}
+  />
+</figure>
+
 <h2 class="mt-3">Expected number of recovered singlets</h2>
 
-<aside class="sticky top-16 z-50 bg-slate-50/90 backdrop-blur-lg">
+<aside class=" top-16 z-50 bg-slate-50/90 backdrop-blur-lg">
   <div class="flex flex-col items-end w-24">
-    <Input min="0" max="1" step="0.01" label="Capture Efficiency" bind:value={captureEff} />
+    <Input min="0.01" max="1" step="0.01" label="Capture Efficiency" bind:value={captureEff} />
     <Input min="0" step="100" label="Cost per 10x lane" bind:value={cost10x} />
     <Input min="0" step="0.1" label="Cost per 1M reads" bind:value={costPer1MRead} />
   </div>
@@ -267,28 +327,6 @@
     </figcaption>
   </figure>
 </aside>
-
-<figure>
-  <h4 class="pb-1.5">Hashing reduces undiscernable multiplets</h4>
-  <PlotElem
-    options={{
-      color: { interpolate: (t) => d3.interpolatePuBu(0.7 * t + 0.3) },
-      x: { label: "Number of loaded cells per lane →" },
-      y: { type: "log", grid: true, label: "↑ Proportion of undiscernable GEMs", tickFormat: "5f" },
-      marks: [
-        Plot.line(varyHashes, { x: "nCells", y: "undiscernableGEM", z: "nHash", stroke: "nHash", curve: "basis", title: "nHash" }),
-        Plot.text(
-          varyHashes,
-          Plot.selectLast({ x: "nCells", y: "undiscernableGEM", z: "nHash", text: (d) => (d.nHash === 1 ? "No hashing" : `${d.nHash} hashes`), textAnchor: "start", dx: 3, fontSize: 11 })
-        ),
-        Plot.ruleY([0.02]),
-      ],
-      insetBottom: 12,
-    }}
-    props={{ varyHashes }}
-    update={(obj, props) => console.log(obj)}
-  />
-</figure>
 
 <h2>Costs</h2>
 <p>
