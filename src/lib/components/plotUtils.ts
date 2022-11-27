@@ -8,7 +8,7 @@ export type FromPlot = {
   options: object;
 };
 
-export function updateYAxis({ selection, scales, axes }: FromPlot, transition = false) {
+export function updateYAxis({ selection, scales, axes }: FromPlot, { X }, transition = false) {
   let sel = selection.select('[aria-label="y-axis"]');
 
   if (transition) {
@@ -29,10 +29,11 @@ export function updateYAxis({ selection, scales, axes }: FromPlot, transition = 
     .attr("stroke-width", 0);
 
   // Add extended grid lines
+  const currX2 = selection.select('[aria-label="y-axis"]').select(".tick line:nth-of-type(2)").attr("x2");
   selection
     .select('[aria-label="y-axis"]')
     .selectAll(".tick line:only-of-type")
-    .call((g) => g.clone(true).attr("stroke-opacity", 0.1).attr("x2", scales.x.range()[1]));
+    .call((g) => g.clone(true).attr("stroke-opacity", 0.1).attr("x2", currX2));
 }
 
 type NumString = number | string;
@@ -91,7 +92,7 @@ export function update(fromPlot: FromPlot, data: object[], options: { x: string;
 
   // Update Y-axis
   fromPlot.scales.y.domain([d3.min(Y), d3.max(Y)]);
-  updateYAxis(fromPlot, true);
+  updateYAxis(fromPlot, { X, Y, Z, zDomain, I }, true);
 
   updateLine(fromPlot, { X, Y, Z, zDomain, I }, true);
 

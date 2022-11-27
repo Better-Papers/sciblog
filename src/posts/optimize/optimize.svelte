@@ -158,6 +158,11 @@
     });
   }
 
+  const usdFormatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+
   onMount(render);
 
   $: if (gems || cost10x || costPer1MRead || captureEff) genVals();
@@ -313,10 +318,10 @@
   sequencing cost dominates and we do not get any more savings from loading more cells.
 </p>
 <p>
-  We assume that a lane of Chromium costs $
-  <b>{cost10x.toLocaleString("en-US")}</b>
-  and that sequencing costs $
-  <b>{costPer1MRead.toFixed(2)}</b>
+  We assume that a lane of Chromium costs
+  <b>{usdFormatter.format(cost10x)}</b>
+  and that sequencing costs
+  <b>{usdFormatter.format(costPer1MRead)}</b>
   per million reads.
 </p>
 
