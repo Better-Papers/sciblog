@@ -84,9 +84,6 @@
   }
 
   const render = () => {
-    // if (!div) return;
-    // while (div.firstChild) div.removeChild(div.firstChild);
-
     d3.selectAll('[aria-label="x-axis"] > text').attr("dy", "0.4em"); // move x-axis labels down a bit
     d3.selectAll('[aria-label="y-axis"] > text').attr("dy", "-1em"); // move y-axis labels up a bit
   };
@@ -213,8 +210,6 @@
 
   $: if (gems || cost10x || costPer1MRead || captureEff) genVals();
 </script>
-
-<div bind:this={div} class="flex flex-col gap-y-4" />
 
 <figure>
   <h4 class="pb-1.5">Hashing reduces undiscernable multiplets</h4>
