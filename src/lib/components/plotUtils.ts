@@ -95,9 +95,10 @@ export function update(fromPlot: FromPlot, data: object[], options: { x: string;
   updateYAxis(fromPlot, { X, Y, Z, zDomain, I }, true);
 
   updateLine(fromPlot, { X, Y, Z, zDomain, I }, true);
+  console.log(fromPlot.options);
 
-  const marks = fromPlot.options.marks.map((m) => m.constructor.name);
-  if (marks.includes("Text")) {
+  const marks = fromPlot.options.marks.map((m) => m.ariaLabel);
+  if (marks.includes("text")) {
     updateTextLegend(fromPlot, { X, Y, Z, zDomain, I }, true);
   }
 }
