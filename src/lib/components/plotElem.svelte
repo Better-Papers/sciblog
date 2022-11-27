@@ -3,7 +3,6 @@
   import type * as d3 from "d3";
   import { runNode } from "../utils";
 
-  export let options: object;
   export let style = { background: "transparent", fontSize: 12 };
 
   let obj: {
@@ -13,14 +12,16 @@
     axes: Record<string, d3.Axis<[number, number]>>;
   };
 
-  export let props: object = {};
-  export let update: (d: typeof obj, props: object) => void = () => {};
+  export let data: object[];
+  export let plotOptions: object = {};
+  export let updateOptions: object = {};
+  export let update: (d: typeof obj, data: object[], options: object) => void = () => {};
 
   function runPlot(svg: Node) {
-    obj = Plot.plot({ svg, style, ...options });
+    obj = Plot.plot({ svg, style, ...plotOptions });
   }
 
-  $: update(obj, props);
+  $: if (obj && data) update(obj, data, updateOptions);
 </script>
 
 <svg use:runNode={runPlot} />
