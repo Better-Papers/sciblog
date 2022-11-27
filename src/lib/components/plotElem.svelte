@@ -20,7 +20,7 @@
     obj = Plot.plot({ svg, style, ...options });
   }
 
-  $: update(obj, props);
+  $: if (obj) update(obj, props);
 </script>
 
 <svg use:runNode={runPlot} />
