@@ -48,10 +48,6 @@ export function updateLine(
     .x((i) => fromPlot.scales.x(X[i]))
     .y((i) => fromPlot.scales.y(Y[i]));
 
-  if (Z?.includes(60000)) {
-    console.log(d3.group(I, (i) => Z[i]));
-  }
-
   let sel = fromPlot.selection
     .select('[aria-label = "line"]')
     .selectAll("path")
@@ -92,13 +88,6 @@ export function update(fromPlot: FromPlot, data: object[], options: { x: string;
 
   const zDomain = Z ? new d3.InternSet(Z) : undefined;
   const I = Z ? d3.range(X.length).filter((i) => zDomain!.has(Z[i])) : d3.range(X.length);
-
-  if (options.name) {
-    console.log(data);
-
-    console.log(data.map((d) => d["readsPerCell"]));
-    console.log(Z);
-  }
 
   // Update Y-axis
   fromPlot.scales.y.domain([d3.min(Y), d3.max(Y)]);

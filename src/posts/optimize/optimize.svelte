@@ -6,7 +6,7 @@
   import * as Plot from "@observablehq/plot";
   import * as d3 from "d3";
   import katex from "katex";
-  import { clone, flatten, throttle } from "lodash-es";
+  import { clone, cloneDeep, throttle } from "lodash-es";
   import { onMount } from "svelte";
   import colors from "tailwindcss/colors";
 
@@ -80,11 +80,10 @@
       .map((v) => clone(v).sort((a, b) => a.costPerCell - b.costPerCell)[0])
       .map((v) => ({ ...v, costPerCellStr: "$" + v.costPerCell.toFixed(2) }));
 
-    varyRpc = flatten(varyRpc);
-
-    // for (const v of varyRpc) {
-    //   Object.freeze(v);
-    // }
+    varyRpc = varyRpc.flat();
+    for (const v of varyRpc) {
+      Object.freeze(v);
+    }
 
     proportions = [];
     for (const v of varyCells) {
@@ -394,17 +393,10 @@
       ],
       insetBottom: 12,
     }}
-    data={varyHashes}
+    data={varyRpc}
     updateOptions={{ x: "nCells", y: "costPerCell", z: "readsPerCell", name: "here" }}
-    update={(...args) => {
-      // genVals();
-      update(...args);
-    }}
+    {update}
   />
-</figure>
-
-<figure class="mt-3">
-  <svg use:runNode={plotCostPerCell} />
 </figure>
 
 <p>
