@@ -1,18 +1,19 @@
 <script lang="ts">
   import ArrowBack from "$src/lib/components/arrowBack.svelte";
   import PostPage from "$src/lib/elements/postPage.svelte";
-  export let data;
-  let { filtered, slug } = data;
+  import type { PageData } from "./$types";
+
+  export let data: PageData;
 </script>
 
 <header class="prose flex items-center gap-x-3">
   <ArrowBack />
-  <h1 class="text-neutral-800">Tag: {slug}</h1>
+  <h1 class="text-neutral-800">Tag: {data.slug}</h1>
 </header>
 
 <section class="mt-4 flex flex-col gap-y-10 divide-y-2">
-  {#if filtered.length > 0}
-    {#each filtered as post}
+  {#if data.filtered.length > 0}
+    {#each data.filtered as post}
       <div class="pt-8">
         <PostPage {post} arrow={false} />
       </div>

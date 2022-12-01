@@ -19,7 +19,6 @@ const config = {
       fallback: null,
     }),
     appDir: "internal",
-    prerender: { default: true },
   },
 };
 

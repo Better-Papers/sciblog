@@ -10,7 +10,7 @@ export type Post = {
   raw: string;
 };
 
-const raw = import.meta.glob(`$posts/**/*.md`, { as: "raw", eager: true });
+const raw = import.meta.glob(`$posts/**/*.md`, { eager: true, as: "raw" });
 const processed = import.meta.glob(`$posts/**/*.md`, { eager: true });
 
 export const posts = Object.keys(processed)
