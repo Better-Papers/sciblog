@@ -8,7 +8,7 @@ export type FromPlot = {
   options: object;
 };
 
-export function updateYAxis({ selection, scales, axes }: FromPlot, { X }, transition = false) {
+export function updateYAxis({ selection, scales, axes }: FromPlot, transition = false) {
   let sel = selection.select('[aria-label="y-axis"]');
 
   if (transition) {
@@ -17,23 +17,15 @@ export function updateYAxis({ selection, scales, axes }: FromPlot, { X }, transi
 
   const yOpt = axes.y;
   sel
-    .call(
-      d3
-        .axisLeft(scales.y)
-        .ticks(yOpt.ticks, yOpt.tickFormat)
-        .tickSizeInner(yOpt.tickSize)
-        .tickSizeOuter(0)
-        .tickPadding(yOpt.tickPadding)
-    )
+    .call(d3.axisLeft(scales.y).ticks(yOpt.ticks, yOpt.tickFormat).tickSizeInner(yOpt.tickSize).tickSizeOuter(0).tickPadding(yOpt.tickPadding))
     .select(".domain")
     .attr("stroke-width", 0);
 
   // Add extended grid lines
-  const currX2 = selection.select('[aria-label="y-axis"]').select(".tick line:nth-of-type(2)").attr("x2");
   selection
     .select('[aria-label="y-axis"]')
     .selectAll(".tick line:only-of-type")
-    .call((g) => g.clone(true).attr("stroke-opacity", 0.1).attr("x2", currX2));
+    .call((g) => g.clone(true).attr("stroke-opacity", 0.1).attr("x2", scales.x.range()[1]));
 }
 
 type NumString = number | string;
@@ -48,6 +40,10 @@ export function updateLine(
     .curve(d3.curveBasis)
     .x((i) => fromPlot.scales.x(X[i]))
     .y((i) => fromPlot.scales.y(Y[i]));
+
+  if (Z?.includes(60000)) {
+    console.log(d3.group(I, (i) => Z[i]));
+  }
 
   let sel = fromPlot.selection
     .select('[aria-label = "line"]')
@@ -90,15 +86,21 @@ export function update(fromPlot: FromPlot, data: object[], options: { x: string;
   const zDomain = Z ? new d3.InternSet(Z) : undefined;
   const I = Z ? d3.range(X.length).filter((i) => zDomain!.has(Z[i])) : d3.range(X.length);
 
+  if (options.name) {
+    console.log(data);
+
+    console.log(data.map((d) => d["readsPerCell"]));
+    console.log(Z);
+  }
+
   // Update Y-axis
   fromPlot.scales.y.domain([d3.min(Y), d3.max(Y)]);
-  updateYAxis(fromPlot, { X, Y, Z, zDomain, I }, true);
+  updateYAxis(fromPlot, true);
 
   updateLine(fromPlot, { X, Y, Z, zDomain, I }, true);
-  console.log(fromPlot.options);
 
-  const marks = fromPlot.options.marks.map((m) => m.ariaLabel);
-  if (marks.includes("text")) {
+  const marks = fromPlot.options.marks.map((m) => m.constructor.name);
+  if (marks.includes("Text")) {
     updateTextLegend(fromPlot, { X, Y, Z, zDomain, I }, true);
   }
 }
