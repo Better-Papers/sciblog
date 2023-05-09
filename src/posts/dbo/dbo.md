@@ -4,18 +4,37 @@ title: DBO
 
 ## Abstract
 
-This NIH Pre-doctoral NRSA application proposes to investigate the relationship between the cell cycle and neural progenitor cell differentiation during neurodevelopment. Neural progenitor cells are essential for the development and repair of the nervous system, and their proper differentiation is crucial for normal brain function. While previous studies have shown that cell cycle progression is necessary for neural progenitor cell differentiation, the molecular mechanisms that regulate this process are poorly understood.
-
-The proposed research will be conducted using a combination of in vitro and in vivo approaches, including primary neural progenitor cell culture, mouse models, and genetic manipulation techniques. The results of this study will not only provide new insights into the molecular mechanisms that regulate neural progenitor cell differentiation but also have broader implications for understanding the molecular basis of brain development and function.
-
-The successful completion of this research will not only contribute to our understanding of the cell cycle and neural progenitor cell differentiation but also provide the applicant with valuable research training in molecular biology, neuroscience, and genetic manipulation techniques. This training will enable the applicant to pursue a successful career in academic research, with a focus on the molecular mechanisms that regulate neural development and function.
+Cortical development is a highly regulated process that relies on the precise control of the cell cycle to generate the appropriate number and types of neurons.
+Genetic or environmental perturbations in the cell cycle of neural progenitor cells can influence their proliferation and fate specification,
+with such dysregulation postulated as the primary cause of cortical malformations, such as prenatal microcephaly.
+To gain a deeper understanding of the molecular mechanisms underlying the relationship between the cell cycle and differentiation, we intend to combine single-cell transcriptomics (scRNA-seq) methods with well-validated cell tracing techniques to comprehensively characterize cellular states across various developmental time periods.
+More specifically, our aims are as follows:
+**(Aim 1)**: Develop feature barcoding methods to integrate readouts from complementary cell tracing techniques into scRNA-seq assays.
+Unlike existing methods that artificially separate cell populations into bins, our approach will directly quantify the amount of tracer in each cell,
+significantly increasing resolution and enabling the use of more refined statistical models.
+**(Aim 2a)**: Characterize the transcriptional state resulting in specification of neuronal subtypes as a function of the number and rate of neural progenitor divisions.
+**(Aim 2b)**: Investigate the effect of alterations in mitotic length on changes in differentiation using heterochronic mouse models.
+These combined approaches will enhance our understanding on the spatiotemporal heterogeneity of neural progenitor fate determination.
 
 ## Specific Aims (1 page)
 
-**Aim 1**: Develop a set of molecular tools to assess cell cycle kinetics during CNS development along with integration with transcriptional state information at single-cell resolution.
+Is a causal link between prolonged mitosis and altered neurogenesis evident in vivo? How do alterations in mitotic length drive rapid changes in differentiation?
+
+How and when stochastic neurogenic decisions are made remains to be elucidated, but they likely depend on the influence of extrinsic and intrinsic signals on parameters such as cell cycle length, the asymmetric inheritance of cell components, the generation of dividing (IPCs) versus postmitotic progeny, and the membrane potential of progenitor cells
+
+How do we generate cortical layers? We want to functionalize this dataset with actual cell behavior readout.
+
+The development and patterning of the cerebral cortex is highly regulated. We want to explore transcriptional signature that controls the proliferation and differentiation of neural progenitor cells using labeling reagents.
+
+While the incorporation of tracer signals into single-cell transcriptomics has been achieved, current methods remain limited in terms of resolution or throughput.
+The most common approach is to sort cell populations based on fluorescence intensity prior to single cell sequencing [@luComprehensiveView2022]. However, artificially binning continuous cell populations into 4-6 bins invariably destroys information and introduces bias [@trippeRandomizedGates2022]. Another method involves index sorting single cells into wells, but this is constrained by throughput limitations.
+In contrast, we will utilize feature barcoding techniques to directly measure the quantity of tracers alongside the cell's transcriptional state. This substantially enhances the resolution of our analysis and is crucial for precise statistical model fitting [@hyrienMixtureModel2008].
+
+We will characterize
+**Aim 1**: Develop a set of molecular tools to explore the mechanism of neural progenitor fate specification as a function of the cell cycle.
 This includes the integration of existing tracing tools, such as EdU pulse labeling, for scRNA-Seq and spatial transciptomics.
 
-**Aim 2a**: Test the hypothesis that the specification of neuronal subtypes is differentially affected by the number and rate of neural progenitor divisions.
+**Aim 2a**: Test how specification of neuronal subtypes is differentially affected by the number and rate of neural progenitor divisions.
 We will use the developed tools to assess the distribution of rates of the cell cycle during fate specification and its link to transcriptional signature.
 We will perform the tracing over timepoints to quantify the baseline cell division rates and determine whether they are associated with specific fate decisions.
 
@@ -33,18 +52,21 @@ Cortical layers are patterned through an evolutionarily conserved inside-out mec
 
 In recent years, the intricate integration of cell cycle regulation with neural progenitor specification has become increasingly evident, and the molecular mechanisms underlying this relationship have started to unfold.
 
-We hypothesize that there is a link between fate specification and the number of cell divisions.
+Progenitors can output heterogeneous neuronal populations [@llorcaStochasticFramework2019].
+
+Background technology.
 
 ### Research Design and Methods (~4.5 pages)
 
-### Aim 1: Development of Cell Cycle Tools
-
-In order to gain high-resolution information regarding the relationship between the cell cycle and cell fate,
-we rely primarily on combining current cell labeling techniques with genome-wide single-cell and spatial trancriptomics. Several labeling reagents are chosen based on their ability to complement each other. By varying the pulse-chase interval, we can infer cell cycle parameters.
-
-Although integrating labeling reagents with transcriptomics method have been done, these on cell sorting to bin the cell population based on intensity, which is often limited to 4-6 bins [@luComprehensiveView2022] or single-cell sorting into wells which has throughput limitations.
+Although integrating labeling reagents with transcriptomics method have been done, these rely on cell sorting to bin the cell population based on intensity, which is often limited to 4-6 bins [@luComprehensiveView2022] or single-cell sorting into wells which has throughput limitations.
 Instead, we will use feature barcoding approaches to directly quantify the amount of labeling reagents alongside the cell's transcriptional state.
 This greatly enhances the resolution of our analysis and is crucial for statistical model fitting [@hyrienMixtureModel2008].
+
+### Aim 1: Development of Cell Cycle Profiling Tools
+
+In order to gain high-resolution information regarding the relationship between the cell cycle and cell fate,
+we rely primarily on combining current cell labeling techniques with genome-wide single-cell and spatial trancriptomics.
+Several labeling reagents are chosen based on their ability to complement each other. By varying the pulse-chase interval, we can infer cell cycle parameters.
 
 #### CFSE
 
@@ -55,7 +77,7 @@ with the M phase occurring in the apical (luminal) zone while S-phase occurs in 
 Cells that are in the M-phase can be labelled by an intraventricular injection of carboxyfluorescein succinimide ester (CFSE) a cell-permeable, amine-reactive variant of fluorescein.
 The short half-life and reactiveness of the dye functionally restricts pulse-labeling to juxtaventricular cells [@telleySequentialTranscriptional2016].
 After an initial wash phase where fast cycling proteins are degraded, the fluorescence signal intensity is diluted by two-fold after each cell division.
-Using this strategy, isochronic cohorts of VZ cells can be identified and tracked through their proliferation and differentiation. However, this fast kinetics also restricts labeling only juxtaventricular cells.
+Using this strategy, isochronic cohorts of VZ cells can be identified and tracked through their proliferation and differentiation. However, this fast kinetics also restricts labeling only juxtaventricular cells. This approach has been used to visualize the migration profile of different cohorts.
 
 #### EdU
 
@@ -106,13 +128,24 @@ We will collect the cells for sequencing after several chase intervals.
 With a mathematical model, CycleFlow [@jollyCycleFlowSimultaneously2022], the parameters of the cell cycle, including its rate, can be calculated with Bayesian methods.
 
 This would be done in concordance with the tricycle algorithm, which phases the position a cell is in its cell cycle from its transcriptional state [@zhengUniversalPrediction2022].
-This differs substantially from the standard method of artificially binning the cell cycle into four phases.
+This differs substantially from the standard method of artificially binning the cell cycle into four phases and analyzing them separately.
 
-### Aim 2a: Test the hypothesis that the specification of neuronal subtypes is differentially affected by the number and rate of neural progenitor divisions
+#### Anticipated problems that might arise and alternative plans to accomplish the specific aims if these problems arise
 
-#### Spatial Transcriptomics
+I have successfully tested various aspects of the assays mentioned in Aim 1 _in vitro_.
+If the described labeling approaches can not be used _in vivo_, we can fallback to using only fluorescent reporters alongside FISH.
 
-However, this technique does not provide information about the spatial context of the cells, as the cells are dissociated and analyzed independently.
+### Aim 2a: Test how specification of neuronal subtypes is differentially affected by the number and rate of neural progenitor division
+
+Get parameters for cell cycle model.
+Single-molecule fluorescence in situ hybridization (smFISH) is [@rajImagingIndividual2008]
+I also have successfully designed and executed a pilot MERFISH experiment. Pan
+
+Cell autonomous from transplant experiment. Data from migrating cells. Organization of
+
+However, this technique does not provide information about the spatial context of the cells, as the cells are dissociated and analyzed independently. Due to IKN, gaining spatial context is useful. Transcriptomic state.
+
+List of differential genes in different phases of the cell cycle, linked to fate specification.
 
 Spatial transcriptomics, on the other hand, allows for the identification and quantification of gene expression in situ within a tissue, providing information about the spatial distribution of gene expression. This technique enables the visualization of gene expression patterns within the context of the tissue, revealing insights into the spatial organization of cell types and cell-to-cell interactions.
 
@@ -120,13 +153,38 @@ By combining these two techniques, researchers can gain a more comprehensive und
 
 scRNA-seq provides an unbiased view of the transcriptome, albeit with high dropout rates. FISH-based techniques must be specified using probes but have >90% detection efficiency.
 
-#### Tentative sequence for the investigation
+Tricycle phase of cells from published data.
 
-•
+There are fast cyclers and slow cyclers and we want to know what the differences are between them. We know that
 
-We have preliminary data demonstrating the effectiveness of EdU-Seq and CFSE-Seq by proxy. Early EdU-Seq data demonstrate correlation with canonical
+Sox9 case, heterogeneity within progenitor population. We want to screen all the genes at once.
+
+Test whether we rediscover Sox9 as a difference factor.
+
+This is FlashTag with sequencing, tie the amount to individual cells.
+
+We can just sort the cells.
+
+Birthdating cells and correlate with transcriptional data.
+
+### Aim 2b: Demonstrate the effect of cell cycle perturbation on fate specification using genetic and pharmacological approaches
+
+### Tentative sequence for the investigation
+
+#### Year 1 (Present - December 2023)
+
+I plan to complete the primary development and _in vitro_ characterization of assays described under Aim 1.
+
+#### Year 2 (January - December 2024)
+
+After gaining broad understanding of the assays and their properties, I will begin Aim 2A and 2B of my research plan.
+I will utilize the Pantr2
+
+#### Year 3 (January 2025 - ~June 2025) Anticipated year of graduation
 
 ### Data analysis
+
+Input, output. of each cell
 
 We will integrate multi-omic data, gene expression measurements, intricate interrelated phenotypes, and the reconstruction of cellular histories to identify novel genes and processes associated with cell fate specification during corticogenesis. This approach will enable us to both implicate known pathways in specific cellular contexts and discover new functional groupings of co-regulated genes that affect the fate specification of distinct neuronal subtypes in relation to the impact of prolonged mitosis on microcephaly and associated developmental disorders.
 
@@ -135,7 +193,3 @@ Additionally, we will use our experience with latent space representations to de
 - Failure to
 
 I have developed Samui Browser for the visualization of high-dimensional biological data. We also confirmed the chemistry of EdU-tagging with flow cytometry. A preliminary panel with MERFISH genes are ready
-
-#### Anticipated problems that might arise and alternative plans to accomplish the specific aims if these problems arise
-
-Whereas we have preliminary data for Aim 1,
