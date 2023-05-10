@@ -18,27 +18,44 @@ These combined approaches will enhance our understanding on the spatiotemporal h
 
 ## Specific Aims (1 page)
 
-Is a causal link between prolonged mitosis and altered neurogenesis evident in vivo? How do alterations in mitotic length drive rapid changes in differentiation?
+Neurogenesis requires the precise orchestration of proliferation and differentiation, both of which are intimately related to the cell cycle.
+This relationship is evident in the brain, where the cell cycle tends to lengthen on average as brain development progresses [@pontiCellCycle2013].
+Moreover, acute lengthening of the cell cycle has been shown to disrupt neurogenesis, resulting in a reduced number of progenitor cells and altered cell fate specification, which are associated with neurodevelopmental and psychiatric disorders [@mitchell-dickAcuteLengthening2020].
+Although the single-cell diversity of the developing cortex is becoming increasingly well characterized [@johnsonSinglecellAnalysis2015],
+our understanding of how temporally progressing transcriptional state, particularly the cell cycle, generate the neuronal diversity remains limited.
+A comprehensive understanding of transcriptional signature that controls the proliferation and differentiation of neural progenitor cells can pave the way for valuable insights into cortical development and its associated disorders.
+
+Cell tracking and labeling assays are based on the timed introduction of tracers, such as nucleoside analogs incorporation and fluorescent dye dilution.
+To integrate this information with the cell's transcriptiomic state, a common approach involves sorting cell populations based on fluorescence intensity of tracers prior to single-cell sequencing [@luComprehensiveView2022].
+However, this method of artificially categorizing continuous cell populations into 4-6 bins inevitably leads to information loss and introduces bias [@trippeRandomizedGates2022].
+
+Instead, we will leverage feature barcoding techniques to simultaneously measure the quantity of tracers and the cell's transcriptional state during single-cell sequencing.
+This approach eliminates tracer quantization and significantly improves the resolution of our analysis, which is essential for accurate statistical model fitting and data interpretation [@hyrienMixtureModel2008].
+
+**Aim 1**: Develop a set of molecular tools to explore the mechanism of neural progenitor fate specification as a function of the cell cycle.
+This includes the integration of existing tracing tools, such as EdU pulse labeling, with scRNA-Seq through feature barcoding.
+
+**Aim 2a**: Investigate how specification of neuronal subtypes is differentially affected by key parameters of the cell cycle, particularly the number and rate of neural progenitor divisions.
+We will use the developed tools to assess the distribution of cell cycle rates during fate specification and how it relates to the cell's transcriptional signature over multiple time periods.
+
+**Aim 2b**: Demonstrate the effect of cell cycle perturbation on fate specification using genetic and pharmacological approaches. We will assess changes in the expression of fate-determining transcription factors and evaluate the functional consequences of altered fate decisions using in vitro and in vivo assays.
 
 How and when stochastic neurogenic decisions are made remains to be elucidated, but they likely depend on the influence of extrinsic and intrinsic signals on parameters such as cell cycle length, the asymmetric inheritance of cell components, the generation of dividing (IPCs) versus postmitotic progeny, and the membrane potential of progenitor cells
 
+Cell tracking and labeling are accomplished through the timed introduction of tracers, such as the incorporation of nucleoside analogs and fluorescent dye dilution.
+
 How do we generate cortical layers? We want to functionalize this dataset with actual cell behavior readout.
 
-The development and patterning of the cerebral cortex is highly regulated. We want to explore transcriptional signature that controls the proliferation and differentiation of neural progenitor cells using labeling reagents.
+The development and patterning of the cerebral cortex is highly regulated.
 
-While the incorporation of tracer signals into single-cell transcriptomics has been achieved, current methods remain limited in terms of resolution or throughput.
-The most common approach is to sort cell populations based on fluorescence intensity prior to single cell sequencing [@luComprehensiveView2022]. However, artificially binning continuous cell populations into 4-6 bins invariably destroys information and introduces bias [@trippeRandomizedGates2022]. Another method involves index sorting single cells into wells, but this is constrained by throughput limitations.
-In contrast, we will utilize feature barcoding techniques to directly measure the quantity of tracers alongside the cell's transcriptional state. This substantially enhances the resolution of our analysis and is crucial for precise statistical model fitting [@hyrienMixtureModel2008].
+There is significant heterogeneity [@ohnumaNeurogenesisCell2003; @llorcaStochasticFramework2019] The time at which the cell exits the cell cycle is its “birth date.” In most systems studied, there is a correlation between birth date and fate, giving rise to the process known as histogenesis
+Single-cell analyses of neocortical progenitors revealed molecular and cellular heterogeneity [@yuzwaDevelopmentalEmergence2017; @johnsonSinglecellAnalysis2015].
 
-We will characterize
-**Aim 1**: Develop a set of molecular tools to explore the mechanism of neural progenitor fate specification as a function of the cell cycle.
-This includes the integration of existing tracing tools, such as EdU pulse labeling, for scRNA-Seq and spatial transciptomics.
+Is a causal link between prolonged mitosis and altered neurogenesis evident in vivo? How do alterations in mitotic length drive rapid changes in differentiation?
 
-**Aim 2a**: Test how specification of neuronal subtypes is differentially affected by the number and rate of neural progenitor divisions.
-We will use the developed tools to assess the distribution of rates of the cell cycle during fate specification and its link to transcriptional signature.
-We will perform the tracing over timepoints to quantify the baseline cell division rates and determine whether they are associated with specific fate decisions.
+Comparing the division history of neurons in the deep and upper layer of the developing mouse cortex revealed that, indeed, radial glia cells generating deep layer neurons divided less as compared to those generating upper layer neurons, supporting the current model (Gao et al., 2014). However, we observed a substantial amount of deep- and upper-layer neurons that showed the same green/red ratio and thus arose from radial glia cells that underwent the same amount of cell divisions. These findings indicate that not all radial glia cells first produce deep and, later, upper layer neurons, but rather suggests the existence of different radial glia cells being active at different times during development.
 
-**Aim 2b**: Demonstrate the effect of cell cycle perturbation on fate specification using genetic and pharmacological approaches. We will assess changes in the expression of fate-determining transcription factors and evaluate the functional consequences of altered fate decisions using in vitro and in vivo assays.
+APs can revert their temporal identity and re-enter past molecular states to once again generate normally earlier-born neurons. By contrast, late-born IPs are committed progenitors that lack such fate plasticity. These results highlight an unexpected cell-type-specific diversity in the temporal plasticity [@oberstTemporalPlasticity2019]
 
 ## Research Strategy (6 pages, including figures and tables)
 
@@ -52,7 +69,12 @@ Cortical layers are patterned through an evolutionarily conserved inside-out mec
 
 In recent years, the intricate integration of cell cycle regulation with neural progenitor specification has become increasingly evident, and the molecular mechanisms underlying this relationship have started to unfold.
 
+Neocortical maturation starts at about day 16 of gestation in humans [16] and embryonic day (E) 7 in rodents, with neurulation followed by regional specification and expansion of the PFC. The process is controlled by intrinsic transcription factors and extrinsic growth factors that tightly interact to delimit the prefrontal boundaries [17]. Once the neural tube is formed, at around 5 weeks of gestation in humans and E10 in rodents, neurons destined to form the neocortex are born as neuroblasts. Their proliferation is a long-lasting process with an area-specific dynamic that generally peaks between 6 and 18 weeks gestation in humans [18] and E10 and E15 in rodents [19]. Excitatory neurons are generated from apical progenitors located in the ventricular zone as result of a complex interplay of cell-autonomous mechanisms and local and long-range environmental cues [20,21]. Towards the end of the neurogenic period, glial cells are generated [22].
+
 Progenitors can output heterogeneous neuronal populations [@llorcaStochasticFramework2019].
+
+Cell fate decisions are tightly linked to cell cycle [@pauklinCellcycleState2013].
+This fact is in agreement with the the stem cell literature that that differentiation is correlated with cell cycle lengthening, particularly during the G1 phase [@langeCdksCyclins2010].
 
 Background technology.
 
