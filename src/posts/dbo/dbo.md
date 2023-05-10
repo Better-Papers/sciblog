@@ -35,59 +35,42 @@ This approach eliminates tracer quantization and significantly improves the reso
 **Aim 1**: Develop a set of molecular tools to explore the mechanism of neural progenitor fate specification as a function of the cell cycle.
 This includes the integration of existing tracing tools, such as EdU pulse labeling, with scRNA-Seq through feature barcoding.
 
-**Aim 2a**: Investigate how specification of neuronal subtypes is differentially affected by key parameters of the cell cycle, particularly the number and rate of neural progenitor divisions.
+**Aim 2a**: Investigate how specification of neuronal subtypes is affected by key parameters of the cell cycle, particularly the number and rate of neural progenitor divisions.
 We will use the developed tools to assess the distribution of cell cycle rates during fate specification and how it relates to the cell's transcriptional signature over multiple time periods.
 
-**Aim 2b**: Demonstrate the effect of cell cycle perturbation on fate specification using genetic and pharmacological approaches. We will assess changes in the expression of fate-determining transcription factors and evaluate the functional consequences of altered fate decisions using in vitro and in vivo assays.
-
-How and when stochastic neurogenic decisions are made remains to be elucidated, but they likely depend on the influence of extrinsic and intrinsic signals on parameters such as cell cycle length, the asymmetric inheritance of cell components, the generation of dividing (IPCs) versus postmitotic progeny, and the membrane potential of progenitor cells
-
-Cell tracking and labeling are accomplished through the timed introduction of tracers, such as the incorporation of nucleoside analogs and fluorescent dye dilution.
-
-How do we generate cortical layers? We want to functionalize this dataset with actual cell behavior readout.
-
-The development and patterning of the cerebral cortex is highly regulated.
-
-There is significant heterogeneity [@ohnumaNeurogenesisCell2003; @llorcaStochasticFramework2019] The time at which the cell exits the cell cycle is its “birth date.” In most systems studied, there is a correlation between birth date and fate, giving rise to the process known as histogenesis
-Single-cell analyses of neocortical progenitors revealed molecular and cellular heterogeneity [@yuzwaDevelopmentalEmergence2017; @johnsonSinglecellAnalysis2015].
-
-Is a causal link between prolonged mitosis and altered neurogenesis evident in vivo? How do alterations in mitotic length drive rapid changes in differentiation?
-
-Comparing the division history of neurons in the deep and upper layer of the developing mouse cortex revealed that, indeed, radial glia cells generating deep layer neurons divided less as compared to those generating upper layer neurons, supporting the current model (Gao et al., 2014). However, we observed a substantial amount of deep- and upper-layer neurons that showed the same green/red ratio and thus arose from radial glia cells that underwent the same amount of cell divisions. These findings indicate that not all radial glia cells first produce deep and, later, upper layer neurons, but rather suggests the existence of different radial glia cells being active at different times during development.
-
-APs can revert their temporal identity and re-enter past molecular states to once again generate normally earlier-born neurons. By contrast, late-born IPs are committed progenitors that lack such fate plasticity. These results highlight an unexpected cell-type-specific diversity in the temporal plasticity [@oberstTemporalPlasticity2019]
+**Aim 2b**: Demonstrate the effect of cell cycle perturbation on fate specification using genetic and pharmacological approaches. We will assess changes in the expression of fate-determining transcription factors and evaluate the transcriptional signature of altered fate decisions.
 
 ## Research Strategy (6 pages, including figures and tables)
 
 ### Background and Significance (~1.5 pages)
 
-Sketch briefly the background to the proposal. State concisely the importance of the research described in the proposal by relating the specific aims to broad, long-term objectives. Clearly relate the long-term objectives and theories to the specific hypotheses to be tested. Use this section to provide an account of any preliminary studies that might demonstrate the utility of the proposed project as a training experience.
+<!-- Sketch briefly the background to the proposal. State concisely the importance of the research described in the proposal by relating the specific aims to broad, long-term objectives. Clearly relate the long-term objectives and theories to the specific hypotheses to be tested. Use this section to provide an account of any preliminary studies that might demonstrate the utility of the proposed project as a training experience. -->
 
-The differentiation and proliferation of progenitor cells during the development of the central nervous system (CNS) is profoundly influenced by the fine manipulation and the spatial dynamics of the cell cycle (Hamburger, 1948; Kauffman, 1968; Merk, 1887; Sauer, 1935). The perturbation of which results in neurodevelopmental disorders, including microcephaly.
+Neurogenesis relies on the precise control of neural progenitor cell proliferation, cell cycle exit, and differentiation to produce the diverse array of neurons and glial cells at the appropriate time and location.
+Progenitor cell populations transition through different modes of division over developmental time periods.
+The progenitor pool is initially expanded through symmetric divisions followed by patterning through differential growth rate during asymmetric and symmetric neurogenic divisions.
+Neurogenesis is strictly orchestrated spatially and temporally, with progenitor cells altering their competence and generating different cell types over time [@kohwiTemporalFate2013].
 
-Cortical layers are patterned through an evolutionarily conserved inside-out mechanism — early-born neurons migrate from the proliferative neuroepithelium to occupy deep cortical layers, while late-born neurons move past the initial occupants of the cortical plate to populate more superficial layers (Berry and Rogers, 1965). Consequently, the precise timing of the cessation of cell division and the subsequent migration of cells as neurons (or glia) have been considered critical factors for establishing brain organization.
+In stem cell research, cell fate specification is known to be intimately connected to the cell cycle [@pauklinCellcycleState2013; @langeCdksCyclins2010].
+Similarly in the brain, the G1 phase is known to lengthen over the course of mammalian cerebral cortex development [@calegariSelectiveLengthening2005].
+The mammalian cortex's signature six-layered structure itself is formed by consecutive waves of neurogenesis with laminar fate of each neuron determined during the final S or G2 phase of the progenitors [@frantzRestrictionLate1996].
+It is, therefore, not surprising that any perturbations to the cell cycle would have deleterious impacts to neurogenesis.
 
-In recent years, the intricate integration of cell cycle regulation with neural progenitor specification has become increasingly evident, and the molecular mechanisms underlying this relationship have started to unfold.
+<!-- show ∃ heterogeneity -->
 
-Neocortical maturation starts at about day 16 of gestation in humans [16] and embryonic day (E) 7 in rodents, with neurulation followed by regional specification and expansion of the PFC. The process is controlled by intrinsic transcription factors and extrinsic growth factors that tightly interact to delimit the prefrontal boundaries [17]. Once the neural tube is formed, at around 5 weeks of gestation in humans and E10 in rodents, neurons destined to form the neocortex are born as neuroblasts. Their proliferation is a long-lasting process with an area-specific dynamic that generally peaks between 6 and 18 weeks gestation in humans [18] and E10 and E15 in rodents [19]. Excitatory neurons are generated from apical progenitors located in the ventricular zone as result of a complex interplay of cell-autonomous mechanisms and local and long-range environmental cues [20,21]. Towards the end of the neurogenic period, glial cells are generated [22].
-
-Progenitors can output heterogeneous neuronal populations [@llorcaStochasticFramework2019].
-
-Cell fate decisions are tightly linked to cell cycle [@pauklinCellcycleState2013].
-This fact is in agreement with the the stem cell literature that that differentiation is correlated with cell cycle lengthening, particularly during the G1 phase [@langeCdksCyclins2010].
+Progenitors can output heterogeneous neuronal populations [@llorcaStochasticFramework2019]. APs can revert their temporal identity and re-enter past molecular states to once again generate normally earlier-born neurons. By contrast, late-born IPs are committed progenitors that lack such fate plasticity. These results highlight an unexpected cell-type-specific diversity in the temporal plasticity [@oberstTemporalPlasticity2019]. How and when stochastic neurogenic decisions are made remains to be elucidated. How do alterations in mitotic length drive rapid changes in differentiation? The time at which the cell exits the cell cycle is its “birth date.” In most systems studied, there is a correlation between birth date and fate, giving rise to the process known as histogenesis
+Single-cell analyses of neocortical progenitors revealed molecular and cellular heterogeneity [@yuzwaDevelopmentalEmergence2017; @johnsonSinglecellAnalysis2015].
+Comparing the division history of neurons in the deep and upper layer of the developing mouse cortex revealed that, indeed, radial glia cells generating deep layer neurons divided less as compared to those generating upper layer neurons, supporting the current model (Gao et al., 2014). However, we observed a substantial amount of deep- and upper-layer neurons that showed the same green/red ratio and thus arose from radial glia cells that underwent the same amount of cell divisions. These findings indicate that not all radial glia cells first produce deep and, later, upper layer neurons, but rather suggests the existence of different radial glia cells being active at different times during development.
 
 Background technology.
 
 ### Research Design and Methods (~4.5 pages)
 
-Although integrating labeling reagents with transcriptomics method have been done, these rely on cell sorting to bin the cell population based on intensity, which is often limited to 4-6 bins [@luComprehensiveView2022] or single-cell sorting into wells which has throughput limitations.
-Instead, we will use feature barcoding approaches to directly quantify the amount of labeling reagents alongside the cell's transcriptional state.
-This greatly enhances the resolution of our analysis and is crucial for statistical model fitting [@hyrienMixtureModel2008].
-
 ### Aim 1: Development of Cell Cycle Profiling Tools
 
-In order to gain high-resolution information regarding the relationship between the cell cycle and cell fate,
-we rely primarily on combining current cell labeling techniques with genome-wide single-cell and spatial trancriptomics.
+To answer the questions described in the specific aims, we need a set of molecular tools can provide temporal and spatial context to the single-cell transcriptomes.
+Here, we development of complementary cell tracing tools that can be precisely quantified alongside the cell's transcriptome via scRNA-seq without cell sorting.
+This also has the benefit of not quantizing our data and is crucial for statistical model fitting [@hyrienMixtureModel2008].
 Several labeling reagents are chosen based on their ability to complement each other. By varying the pulse-chase interval, we can infer cell cycle parameters.
 
 #### CFSE
