@@ -71,7 +71,8 @@ Background technology.
 To answer the questions described in the specific aims, we need a set of molecular tools can provide temporal and spatial context to the single-cell transcriptomes.
 Here, we development of complementary cell tracing tools that can be precisely quantified alongside the cell's transcriptome via scRNA-seq without cell sorting.
 This also has the benefit of not quantizing our data and is crucial for statistical model fitting [@hyrienMixtureModel2008].
-Several labeling reagents are chosen based on their ability to complement each other. By varying the pulse-chase interval, we can infer cell cycle parameters.
+Several labeling reagents are chosen based on their ability to complement each other.
+By varying the pulse-chase interval, a mathematical model, CycleFlow [@jollyCycleFlowSimultaneously2022], can calculate parameters of the cell cycle, including its rate.
 
 #### CFSE
 
@@ -130,7 +131,6 @@ We will perform validation of these labeling techniques using _in vitro_ cell cu
 
 To determine the senstivity of the detection of the change in rate, we will pulse cells with EdU/CFSE alongside with pharmacological agents that perturb the cell cycle, such as hydroxyurea and etoposide.
 We will collect the cells for sequencing after several chase intervals.
-With a mathematical model, CycleFlow [@jollyCycleFlowSimultaneously2022], the parameters of the cell cycle, including its rate, can be calculated with Bayesian methods.
 
 This would be done in concordance with the tricycle algorithm, which phases the position a cell is in its cell cycle from its transcriptional state [@zhengUniversalPrediction2022].
 This differs substantially from the standard method of artificially binning the cell cycle into four phases and analyzing them separately.
@@ -173,6 +173,8 @@ We can just sort the cells.
 Birthdating cells and correlate with transcriptional data.
 
 ### Aim 2b: Demonstrate the effect of cell cycle perturbation on fate specification using genetic and pharmacological approaches
+
+Our lab has experience with _Pantr2_ KO mice. _Pantr2_ is a long non-coding RNA
 
 ### Tentative sequence for the investigation
 
