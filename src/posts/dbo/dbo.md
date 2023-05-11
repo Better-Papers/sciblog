@@ -53,10 +53,14 @@ Neurogenesis is strictly orchestrated spatially and temporally, with progenitor 
 
 In stem cell research, cell fate specification is known to be intimately connected to the cell cycle [@pauklinCellcycleState2013; @langeCdksCyclins2010].
 Similarly in the brain, the G1 phase is known to lengthen over the course of mammalian cerebral cortex development [@calegariSelectiveLengthening2005].
-The mammalian cortex's signature six-layered structure itself is formed by consecutive waves of neurogenesis with laminar fate of each neuron determined during the final S or G2 phase of the progenitors [@frantzRestrictionLate1996].
-It is, therefore, not surprising that any perturbations to the cell cycle would have deleterious impacts to neurogenesis.
+The mammalian cortex's signature six-layered structure itself is formed by consecutive waves of neurogenesis with laminar fate of each neuron determined during the final S or G2 phase of the progenitors [@frantzRestrictionLate1996]. It is, therefore, not surprising that any perturbations to the cell cycle would have deleterious impacts to neurogenesis.
+In humans, heterochronic mutations have been associated with microcephaly [@doobinMicrocephalyCell2016].
+Furthermore, microcephaly secondary to Zika virus infection has been associated with mitotic catastrophe in neural progenitor cells [@rychlowskaZikaVirus2022].
 
-<!-- show ∃ heterogeneity -->
+In addition to global alterations in cell cycle kinetics,
+differences in cell cycle kinetics across neural progenitor population
+are known to cause different fate specification [@fabra-beserDifferentialExpression2021].
+Studying
 
 Progenitors can output heterogeneous neuronal populations [@llorcaStochasticFramework2019]. APs can revert their temporal identity and re-enter past molecular states to once again generate normally earlier-born neurons. By contrast, late-born IPs are committed progenitors that lack such fate plasticity. These results highlight an unexpected cell-type-specific diversity in the temporal plasticity [@oberstTemporalPlasticity2019]. How and when stochastic neurogenic decisions are made remains to be elucidated. How do alterations in mitotic length drive rapid changes in differentiation? The time at which the cell exits the cell cycle is its “birth date.” In most systems studied, there is a correlation between birth date and fate, giving rise to the process known as histogenesis
 Single-cell analyses of neocortical progenitors revealed molecular and cellular heterogeneity [@yuzwaDevelopmentalEmergence2017; @johnsonSinglecellAnalysis2015].
@@ -69,8 +73,8 @@ Background technology.
 ### Aim 1: Development of Cell Cycle Profiling Tools
 
 To answer the questions described in the specific aims, we need a set of molecular tools can provide temporal and spatial context to the single-cell transcriptomes.
-Here, we development of complementary cell tracing tools that can be precisely quantified alongside the cell's transcriptome via scRNA-seq without cell sorting.
-This also has the benefit of not quantizing our data and is crucial for statistical model fitting [@hyrienMixtureModel2008].
+Here, we plan to develop a set of cell tracing tools that can be precisely quantified alongside the cell's transcriptome via scRNA-seq without cell sorting.
+This also has the benefit of not quantizing our data, which is crucial for statistical model fitting [@hyrienMixtureModel2008].
 Several labeling reagents are chosen based on their ability to complement each other.
 By varying the pulse-chase interval, a mathematical model, CycleFlow [@jollyCycleFlowSimultaneously2022], can calculate parameters of the cell cycle, including its rate.
 
@@ -83,13 +87,16 @@ with the M phase occurring in the apical (luminal) zone while S-phase occurs in 
 Cells that are in the M-phase can be labelled by an intraventricular injection of carboxyfluorescein succinimide ester (CFSE) a cell-permeable, amine-reactive variant of fluorescein.
 The short half-life and reactiveness of the dye functionally restricts pulse-labeling to juxtaventricular cells [@telleySequentialTranscriptional2016].
 After an initial wash phase where fast cycling proteins are degraded, the fluorescence signal intensity is diluted by two-fold after each cell division.
-Using this strategy, isochronic cohorts of VZ cells can be identified and tracked through their proliferation and differentiation. However, this fast kinetics also restricts labeling only juxtaventricular cells. This approach has been used to visualize the migration profile of different cohorts.
+Using this strategy, isochronic cohorts of VZ cells can be identified and tracked through their proliferation and differentiation. However, this fast kinetics also restricts labeling only juxtaventricular cells. Hence, this approach is the most useful for visualizing the migration profile of different prognitor cohorts.
 
 #### EdU
 
-Ethynyl uridine (EdU) is a nucleoside analog that is incorporated into the cell's DNA during the S phase and is widely used for proliferation tracking. The ethynyl group can be reacted or clicked to an azide group in a CuAAC bioorthogonal reaction. This is significantly simpler than BrdU, which necessitates the use of heat denaturation and anti-BrdU labeling.
-EdU can be injected system-wide through an interperitoneal injection, albeit at a lower time resolution than that of CFSE.
-EdU is also known to be cytotoxic and can trigger mitotic arrest though DNA repair pathways [@ligasovaFatalCombination2015].
+Ethynyl uridine (EdU) is a nucleoside analog that is incorporated into the cell's DNA during the S phase and is widely used for proliferation tracking.
+EdU is persistent through the cell's live and gets diluted into its progeny.
+The key advantage of EdU compared to CFSE labeling is that EdU can be introduced system-wide through an interperitoneal injection with the trade-off of lower time resolution than that of CFSE.
+To detect EdU,we can react the ethynyl group with an azide group in a simple CuAAC bioorthogonal reaction.
+Unlike earlier nucleoside analogs, like BrdU, this requires no heat treatment for epitope unmasking.
+EdU's downside includes its toxicity as it can trigger mitotic arrest though the activation of DNA repair pathways [@ligasovaFatalCombination2015].
 Therefore, we plan to use _f-ara_-EdU, a significantly less toxic variant of EdU for our studies [@neefDynamicMetabolic2011].
 
 #### iCOUNT
@@ -98,8 +105,8 @@ The inducible cell division counter (iCOUNT) method relies on recombination-indu
 In this case, histone variant H3.1 is tagged with mCherry and would switch to EGFP upon Cre activation.
 Then, every subsequent cell division would reduce the amount H3.1-mCherry by half
 as new H3.1-EGFP is produced to refill the pool of histones.
-By comparing the ratio between mCherry and EGFP, we can infer the number of cell cycles since Cre activation.
-This approach provides several benefits compared to previous methods, including integrated signal normalization.
+By comparing the ratio of intensity between mCherry and EGFP, we can infer the number of cell cycles since Cre activation.
+This approach provides several benefits compared to previous methods, including integrated signal normalization and system-wide labeling.
 The authors claimed that this method can count up to 3-4 cell divisions _in vivo_. iCOUNT mice are now commercially available and our collaborator, Dr. Dwight Bergles, already has them expanding in his colonies.
 
 <figure>
@@ -116,65 +123,64 @@ Figure 1b from [@denoth-lippunerVisualizationIndividual2021]
 
 #### Combining Labeling with Transcriptomics
 
-These labeling strategies have given us a wealth of information but their utility could be much greater if combined with other modalities.
+The studies of neural progenitors have been dependent on these labeling strategies.
+Yet, their utility could be much greater if we could precisely combine the labeling readouts with transcriptome-wide measurements.
 Current studies utilizing these labeling strategies are generally limited to imaging in conjunction with immunofluorescence labeling [@telleySequentialTranscriptional2016], cell sorting [@luComprehensiveView2022], and a limited set of genes using FISH [@westSpatiotemporalPatterns2022].
+In order to combine these labeling strategies with scRNA-Seq methods, we need to label these tags with oligonucleotides [@blackCODEXMultiplexed2021; @stoeckiusSimultaneousEpitope2017].
+For CFSE and iCOUNT, I will use oligonucleotide-conjugated antibodies to FITC [@goodProliferationTracing2019], EGFP, and mCherry, respectively.
+Linking EdU to an oligonucleotide has proven more technically challenging as we do not want to use antibodies as these neccessitate harsh epitope unmasking.
+Instead, I designed an assay in which biotin azide is reacted with EdU and subsequently detected with oligonucleotide-conjugated streptavidin. CFSE can be labeled with anti-FITC antibodies with good efficacy.
 
-In order to combine these labeling strategies with scRNA-Seq methods, we need to label these tags with oligonucleotides.
-We have designed an assay in which biotin azide is clicked on to EdU and subsequently detected with oligonucleotide-conjugated streptavidin. CFSE can be labeled with anti-FITC antibodies with good efficacy [@goodProliferationTracing2019].
-We have preliminary data demonstrating the detection of oligonucleotide-tagged EdU along with flow cytometric detection of oligonucleotide-conjugated antibodies to CFSE.
-iCOUNT markers mCherry and EGFP can also be labeled with their respective antibodies.
-This oligonucleotide conjugation technique could also be applied to other transcriptome-wide techniques, such as FISH.
+I plan to use sci-RNA-seq3 [@martinOptimizedProtocol2022], a cost-efficient method that would allow us to scale our analysis to larger cell numbers and conditions.
+Afterwards, I will use the software I wrote along with published softwares, such as kallisto, to run the processing pipeline.
+Differential gene expression analysis can be done using the likelihood ratio test comparing the expression value between cells in different conditions.
+Heterogeneity can be initially assessed using embeding methods, such as tSNE and UMAP.
 
 #### Validation
 
-We will perform validation of these labeling techniques using _in vitro_ cell culture experiment with the HEK293T and Jurkat cell lines. To establish the ground truth of cell cycle parameters, we will employ the Fluorescent Ubiquitination-based Cell Cycle Indicator (FUCCI) [@bajarFluorescentIndicators2016] in a live cell imaging experiment. This system has been established in the lab.
-
-To determine the senstivity of the detection of the change in rate, we will pulse cells with EdU/CFSE alongside with pharmacological agents that perturb the cell cycle, such as hydroxyurea and etoposide.
+We will perform validation of these labeling techniques using _in vitro_ cell culture experiment with the HEK293T and Jurkat cell lines.
+To establish the ground truth of cell cycle parameters, we will employ the Fluorescent Ubiquitination-based Cell Cycle Indicator (FUCCI) [@bajarFluorescentIndicators2016] to track the cell cycle in a live cell imaging experiment.
+This FUCCI system has been established in the lab and clonal population of cell lines have been generated.
+To determine the senstivity of the detection of the change in rate, we will pulse cells with EdU/CFSE alongside with pharmacological agents that perturb the cell cycle, such as hydroxyurea and nocodazole.
 We will collect the cells for sequencing after several chase intervals.
-
 This would be done in concordance with the tricycle algorithm, which phases the position a cell is in its cell cycle from its transcriptional state [@zhengUniversalPrediction2022].
-This differs substantially from the standard method of artificially binning the cell cycle into four phases and analyzing them separately.
+Tricycle provides substantially higher resolution compared to the standard method of artificially binning the cell cycle into four phases and analyzing them separately.
 
-#### Anticipated problems that might arise and alternative plans to accomplish the specific aims if these problems arise
+### Aim 2a: Investigate how specification of neuronal subtypes is affected by key parameters of the cell cycle
 
-I have successfully tested various aspects of the assays mentioned in Aim 1 _in vitro_.
-If the described labeling approaches can not be used _in vivo_, we can fallback to using only fluorescent reporters alongside FISH.
+Prior studies have established Sox9 as a mediator for cell cycle length in a subgroup of radial progenitor cells with reduced neurogenic behavior [@fabra-beserDifferentialExpression2021].
+This is in agreement with other studies using pharmacological approaches to slow the cell cycle [@mitchell-dickAcuteLengthening2020].
+Here, we plan to extend the results of these studies by performing a transcriptome-wide characterization of radial progenitor cell population and their temporal behaviors using the tools described in Aim 1.
+Using mice from various timepoints during development between E10.5 and E15.5,
+I will infer a set of other differentially expressed genes that correlate to the position of the cell in a cell cycle, along with other parameters of the cell cycle.
 
-### Aim 2a: Test how specification of neuronal subtypes is differentially affected by the number and rate of neural progenitor division
-
-Get parameters for cell cycle model.
-Single-molecule fluorescence in situ hybridization (smFISH) is [@rajImagingIndividual2008]
-I also have successfully designed and executed a pilot MERFISH experiment. Pan
-
-Cell autonomous from transplant experiment. Data from migrating cells. Organization of
-
-However, this technique does not provide information about the spatial context of the cells, as the cells are dissociated and analyzed independently. Due to IKN, gaining spatial context is useful. Transcriptomic state.
-
-List of differential genes in different phases of the cell cycle, linked to fate specification.
-
-Spatial transcriptomics, on the other hand, allows for the identification and quantification of gene expression in situ within a tissue, providing information about the spatial distribution of gene expression. This technique enables the visualization of gene expression patterns within the context of the tissue, revealing insights into the spatial organization of cell types and cell-to-cell interactions.
-
-By combining these two techniques, researchers can gain a more comprehensive understanding of gene expression in complex tissues. scRNA-seq can be used to identify cell types and gene expression signatures, while spatial transcriptomics can provide information about the spatial distribution of these signatures within the tissue. This approach can help identify cell-to-cell communication and signaling pathways that are important for normal tissue development and function, as well as for understanding how these processes may be disrupted in disease.
-
-scRNA-seq provides an unbiased view of the transcriptome, albeit with high dropout rates. FISH-based techniques must be specified using probes but have >90% detection efficiency.
-
-Tricycle phase of cells from published data.
-
-There are fast cyclers and slow cyclers and we want to know what the differences are between them. We know that
-
-Sox9 case, heterogeneity within progenitor population. We want to screen all the genes at once.
-
-Test whether we rediscover Sox9 as a difference factor.
-
-This is FlashTag with sequencing, tie the amount to individual cells.
-
-We can just sort the cells.
-
-Birthdating cells and correlate with transcriptional data.
+Furthermore, by using the high-resolution tracing capabilities of our tools, we could study in parallel the behaviors of heterogeneous populations and identify key differences in their transcriptomic signature.
+As a validation, we plan to test whether we rediscover _Sox9_ in our dataset as differentially expressed.
 
 ### Aim 2b: Demonstrate the effect of cell cycle perturbation on fate specification using genetic and pharmacological approaches
 
-Our lab has experience with _Pantr2_ KO mice. _Pantr2_ is a long non-coding RNA
+The role of the cell cycle dynamics in neurogenesis is made apparant through genetic or pharmacological perturbation.
+In humans, heterochronic mutations have been associated with microcephaly [@doobinMicrocephalyCell2016].
+Furthermore, microcephaly secondary to Zika virus infection has been associated with mitotic catastrophe in neural progenitor cells [@rychlowskaZikaVirus2022]. In experimental settings, mutations in genes, such as _Magoh_, [@sheehanDosagedependentRequirements2020] have been shown to result in mitotic defects.
+I plan to use a mouse line our lab experience with, the _Pantr2_ KO mice [@augustinPantr2Transacting2022].
+_Pantr2_ is a long non-coding RNA that alters cell cycle dynamics and I plan to probe in detail the mechanisms of such alterations through tools developed in Aim 1.
+
+### Data analysis
+
+I will reconstruction of cellular histories by integrating transcriptiomic data with tracer data.
+The cell cycle kinetics can be inferred using the CycleFlow algorithm [@jollyCycleFlowSimultaneously2022].
+By using the tracer as a covariate, I will initially perform regression analysis to discover differentially regulated genes in cells with different cell cycle kinetics.
+alongside with This approach will enable us to both implicate known pathways in specific cellular contexts and discover new functional groupings of co-regulated genes that affect the fate specification of distinct neuronal subtypes in relation to the impact of prolonged mitosis on microcephaly and associated developmental disorders.
+
+Additionally, I will use my lab's experience with latent space representations to develop analytic approaches that is more representative of the complex biology compared to marker gene-based techniques.
+These analyses allow me to discover new functional groupings of co-regulated genes that affect the fate specification of distinct neuronal subtypes in relation to the impact of prolonged mitosis on microcephaly and associated developmental disorders.
+
+#### Anticipated problems that might arise and alternative plans to accomplish the specific aims if these problems arise
+
+I have preliminary data demonstrating _in vitro_ success of these methods through the detection of oligonucleotide-tagged EdU using sci-RNA-Seq3 along with flow cytometric detection of oligonucleotide-conjugated antibodies to CFSE.
+The major risk that remains is the adaptation of the method to _in vivo_ conditions.
+However, both EdU and CFSE are in widespread use, and we do not anticipate major difficulties.
+If they do not work, we can fallback to using fluorescent reporters alongside FISH techniques.
 
 ### Tentative sequence for the investigation
 
@@ -185,18 +191,31 @@ I plan to complete the primary development and _in vitro_ characterization of as
 #### Year 2 (January - December 2024)
 
 After gaining broad understanding of the assays and their properties, I will begin Aim 2A and 2B of my research plan.
-I will utilize the Pantr2
+I will study and infer cell cycle parameters in the embryonic mouse brain as described in Aim 2A.
+Afterwards, I will then move to Aim 2B and extend my study to _Pantr2_ mice, a heterochronic mouse line, to investigate the mechanisms in which the cell cycle is altered.
 
 #### Year 3 (January 2025 - ~June 2025) Anticipated year of graduation
 
-### Data analysis
+I will rigorously analyze the data collected from all of my aims to begin to draw conclusions and develop a predictive mathematical model as a function of the cell cycle.
+I believe I will discover differentially regulated genes in different progenitor population as a function of their cell cycle kinetics.
 
-Input, output. of each cell
+## References
 
-We will integrate multi-omic data, gene expression measurements, intricate interrelated phenotypes, and the reconstruction of cellular histories to identify novel genes and processes associated with cell fate specification during corticogenesis. This approach will enable us to both implicate known pathways in specific cellular contexts and discover new functional groupings of co-regulated genes that affect the fate specification of distinct neuronal subtypes in relation to the impact of prolonged mitosis on microcephaly and associated developmental disorders.
-
-Additionally, we will use our experience with latent space representations to develop analytic approaches that go beyond marker gene-based techniques. These analyses will enable a broader picture of cellular dynamics and provide a more comprehensive picture of the relationship between cellular divisions and progenitor competence at single cell resolution.
-
+<!--
 - Failure to
 
-I have developed Samui Browser for the visualization of high-dimensional biological data. We also confirmed the chemistry of EdU-tagging with flow cytometry. A preliminary panel with MERFISH genes are ready
+I have developed Samui Browser for the visualization of high-dimensional biological data. We also confirmed the chemistry of EdU-tagging with flow cytometry. A preliminary panel with MERFISH genes are ready -->
+
+<!--
+Cell autonomous from transplant experiment. Data from migrating cells. Organization of
+
+Get parameters for cell cycle model.
+Single-molecule fluorescence in situ hybridization (smFISH) is [@rajImagingIndividual2008]
+
+However, this technique does not provide information about the spatial context of the cells, as the cells are dissociated and analyzed independently. Due to IKN, gaining spatial context is useful. Transcriptomic state.
+
+Spatial transcriptomics, on the other hand, allows for the identification and quantification of gene expression in situ within a tissue, providing information about the spatial distribution of gene expression. This technique enables the visualization of gene expression patterns within the context of the tissue, revealing insights into the spatial organization of cell types and cell-to-cell interactions.
+
+By combining these two techniques, researchers can gain a more comprehensive understanding of gene expression in complex tissues. scRNA-seq can be used to identify cell types and gene expression signatures, while spatial transcriptomics can provide information about the spatial distribution of these signatures within the tissue. This approach can help identify cell-to-cell communication and signaling pathways that are important for normal tissue development and function, as well as for understanding how these processes may be disrupted in disease.
+
+scRNA-seq provides an unbiased view of the transcriptome, albeit with high dropout rates. FISH-based techniques must be specified using probes but have >90% detection efficiency. -->
