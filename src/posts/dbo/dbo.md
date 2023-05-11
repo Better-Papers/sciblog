@@ -46,60 +46,74 @@ We will use the developed tools to assess the distribution of cell cycle rates d
 
 <!-- Sketch briefly the background to the proposal. State concisely the importance of the research described in the proposal by relating the specific aims to broad, long-term objectives. Clearly relate the long-term objectives and theories to the specific hypotheses to be tested. Use this section to provide an account of any preliminary studies that might demonstrate the utility of the proposed project as a training experience. -->
 
-Neurogenesis relies on the precise control of neural progenitor cell proliferation, cell cycle exit, and differentiation to produce the diverse array of neurons and glial cells at the appropriate time and location.
-Progenitor cell populations transition through different modes of division over developmental time periods.
-The progenitor pool is initially expanded through symmetric divisions followed by patterning through differential growth rate during asymmetric and symmetric neurogenic divisions.
-Neurogenesis is strictly orchestrated spatially and temporally, with progenitor cells altering their competence and generating different cell types over time [@kohwiTemporalFate2013].
+Neurogenesis depends on the precise regulation of neural progenitor cell proliferation, cell cycle exit, and differentiation to generate a diverse array of neurons and glial cells in the correct time and location.
+Progenitor cell populations transition through various modes of division over developmental time periods.
+Initially, the progenitor pool expands through symmetric divisions, followed by patterning via differential growth rate during asymmetric and symmetric neurogenic divisions.
 
-In stem cell research, cell fate specification is known to be intimately connected to the cell cycle [@pauklinCellcycleState2013; @langeCdksCyclins2010].
+Furthermore, cell fate specification is known to be inextricably linked to the cell cycle in stem cells [@pauklinCellcycleState2013; @langeCdksCyclins2010].
 Similarly in the brain, the G1 phase is known to lengthen over the course of mammalian cerebral cortex development [@calegariSelectiveLengthening2005].
-The mammalian cortex's signature six-layered structure itself is formed by consecutive waves of neurogenesis with laminar fate of each neuron determined during the final S or G2 phase of the progenitors [@frantzRestrictionLate1996]. It is, therefore, not surprising that any perturbations to the cell cycle would have deleterious impacts to neurogenesis.
-In humans, heterochronic mutations have been associated with microcephaly [@doobinMicrocephalyCell2016].
-Furthermore, microcephaly secondary to Zika virus infection has been associated with mitotic catastrophe in neural progenitor cells [@rychlowskaZikaVirus2022].
+This happens as progenitor cells alter their competence to generate different cell types over time [@kohwiTemporalFate2013].
+The mammalian cortex's signature six-layered structure is based on this process as it is formed by consecutive waves of neurogenesis with laminar fate of each neuron determined during the final S or G2 phase of the progenitors [@frantzRestrictionLate1996].
 
-In addition to global alterations in cell cycle kinetics,
-differences in cell cycle kinetics across neural progenitor population
-are known to cause different fate specification [@fabra-beserDifferentialExpression2021].
-Studying
+Consequently, it is unsurprising that disruptions to the cell cycle can have detrimental effects on neurogenesis.
+In humans, heterochronic mutations are associated with microcephaly [@doobinMicrocephalyCell2016]. Moreover, microcephaly secondary to Zika virus infection has been linked to mitotic catastrophe in neural progenitor cells [@rychlowskaZikaVirus2022].
 
-Progenitors can output heterogeneous neuronal populations [@llorcaStochasticFramework2019]. APs can revert their temporal identity and re-enter past molecular states to once again generate normally earlier-born neurons. By contrast, late-born IPs are committed progenitors that lack such fate plasticity. These results highlight an unexpected cell-type-specific diversity in the temporal plasticity [@oberstTemporalPlasticity2019]. How and when stochastic neurogenic decisions are made remains to be elucidated. How do alterations in mitotic length drive rapid changes in differentiation? The time at which the cell exits the cell cycle is its “birth date.” In most systems studied, there is a correlation between birth date and fate, giving rise to the process known as histogenesis
-Single-cell analyses of neocortical progenitors revealed molecular and cellular heterogeneity [@yuzwaDevelopmentalEmergence2017; @johnsonSinglecellAnalysis2015].
-Comparing the division history of neurons in the deep and upper layer of the developing mouse cortex revealed that, indeed, radial glia cells generating deep layer neurons divided less as compared to those generating upper layer neurons, supporting the current model (Gao et al., 2014). However, we observed a substantial amount of deep- and upper-layer neurons that showed the same green/red ratio and thus arose from radial glia cells that underwent the same amount of cell divisions. These findings indicate that not all radial glia cells first produce deep and, later, upper layer neurons, but rather suggests the existence of different radial glia cells being active at different times during development.
+In addition to global alterations in cell cycle kinetics, local differences in cell cycle kinetics across neural progenitor populations are known to influence fate specification [@fabra-beserDifferentialExpression2021].
+Single-cell analyses of neocortical progenitors have revealed molecular and cellular heterogeneity [@yuzwaDevelopmentalEmergence2017; @johnsonSinglecellAnalysis2015].
+While progenitors are known to produce heterogeneous neuronal populations, the mechanisms and timing of fate decisions remain to be elucidated [@llorcaStochasticFramework2019].
+A transcriptomic exploration of these rare cells during neural development can offer novel insights into the mechanisms governing progenitor fate specification and may reveal previously undiscovered therapeutic targets.
+Furthermore, by examining progenitor cells at the single-cell level, I can measure and analyze cell-to-cell variability, which can help uncover the sources of this variability and reveal its functional consequences during neural development.
 
-Background technology.
+This study will serve as both an experimental and computational training experience for me.
+I need to acquire a thorough understanding of molecular biology fundamentals in order to develop these assays.
+Additionally, analyzing transcriptomics data requires advanced computational and statistical methods.
+By performing both of these tasks, I can possess a comprehensive understanding of the project's objectives and the underlying biological principles.
+This holistic approach enables me to identify potential optimizations and pitfalls during assay design and analysis, and helps to minimize any misinterpretation of results and accelerates the troubleshooting process when challenges arise.
 
 ### Research Design and Methods (~4.5 pages)
 
 ### Aim 1: Development of Cell Cycle Profiling Tools
 
-To answer the questions described in the specific aims, we need a set of molecular tools can provide temporal and spatial context to the single-cell transcriptomes.
-Here, we plan to develop a set of cell tracing tools that can be precisely quantified alongside the cell's transcriptome via scRNA-seq without cell sorting.
-This also has the benefit of not quantizing our data, which is crucial for statistical model fitting [@hyrienMixtureModel2008].
-Several labeling reagents are chosen based on their ability to complement each other.
-By varying the pulse-chase interval, a mathematical model, CycleFlow [@jollyCycleFlowSimultaneously2022], can calculate parameters of the cell cycle, including its rate.
+To answer the questions described in the specific aims, we require a set of molecular tools can provide temporal and spatial context to single-cell transcriptomes.
+I plan to develop a set of cell tracing tools that can be precisely quantified alongside the cell's transcriptome via scRNA-seq without cell sorting.
+This approach also avoids quantizing the data, which is crucial for statistical model fitting [@hyrienMixtureModel2008].
+I have selected several labeling reagents based on their complementary capabilities.
 
 #### CFSE
 
 During development, neuroepithelial cells proliferate in the ventricular zone (VZ) that are adjacent to the ventricular lumen.
-A hallmark feature is interkinetic nuclear migration,
+A hallmark feature during early development is interkinetic nuclear migration,
 in which the nuclei are translocated according to the cell cycle phase,
 with the M phase occurring in the apical (luminal) zone while S-phase occurs in the basal (pial) zone [@kosodoRegulationInterkinetic2011].
-Cells that are in the M-phase can be labelled by an intraventricular injection of carboxyfluorescein succinimide ester (CFSE) a cell-permeable, amine-reactive variant of fluorescein.
-The short half-life and reactiveness of the dye functionally restricts pulse-labeling to juxtaventricular cells [@telleySequentialTranscriptional2016].
-After an initial wash phase where fast cycling proteins are degraded, the fluorescence signal intensity is diluted by two-fold after each cell division.
-Using this strategy, isochronic cohorts of VZ cells can be identified and tracked through their proliferation and differentiation. However, this fast kinetics also restricts labeling only juxtaventricular cells. Hence, this approach is the most useful for visualizing the migration profile of different prognitor cohorts.
+This translocation of cell mass allows us to label M-phase cells through an intraventricular injection of carboxyfluorescein succinimidyl ester (CFSE), a cell-permeable, amine-reactive variant of fluorescein.
+The dye's short half-life and reactivity functionally restrict pulse-labeling to juxtaventricular cells [@telleySequentialTranscriptional2016].
+After an initial wash phase, the fluorescence signal intensity is diluted twofold after each cell division.
+
+The dye's short half-life and reactivity functionally restrict pulse-labeling to juxtaventricular cells [@telleySequentialTranscriptional2016].
+After an initial wash phase, the fluorescence signal intensity is diluted twofold after each cell division.
+Using this strategy, isochronic cohorts of VZ cells can be identified and tracked through their proliferation and differentiation. However, this fast kinetics also restricts labeling only juxtaventricular cells.
+Hence, this approach is the most useful for visualizing the migration profile of different progenitor cohorts.
 
 #### EdU
 
 Ethynyl uridine (EdU) is a nucleoside analog that is incorporated into the cell's DNA during the S phase and is widely used for proliferation tracking.
-EdU is persistent through the cell's live and gets diluted into its progeny.
-The key advantage of EdU compared to CFSE labeling is that EdU can be introduced system-wide through an interperitoneal injection with the trade-off of lower time resolution than that of CFSE.
-To detect EdU,we can react the ethynyl group with an azide group in a simple CuAAC bioorthogonal reaction.
-Unlike earlier nucleoside analogs, like BrdU, this requires no heat treatment for epitope unmasking.
-EdU's downside includes its toxicity as it can trigger mitotic arrest though the activation of DNA repair pathways [@ligasovaFatalCombination2015].
-Therefore, we plan to use _f-ara_-EdU, a significantly less toxic variant of EdU for our studies [@neefDynamicMetabolic2011].
+EdU is persistent through the cell's life and gets diluted into its progeny, enabling us to track cells over long periods of time.
+The main advantage of EdU compared to CFSE labeling is that EdU can be introduced system-wide through an intraperitoneal injection, albeit at the cost of lower time resolution.
+To detect EdU, the ethynyl group can be reacted with an azide group in a simple CuAAC bioorthogonal reaction.
+Unlike earlier nucleoside analogs, such as BrdU, this requires no heat treatment for epitope unmasking.
+EdU's downside includes its toxicity, as it can trigger mitotic arrest through the activation of DNA repair pathways [@ligasovaFatalCombination2015].
+Thus, we plan to use f-ara-EdU, a significantly less toxic EdU variant, for our studies [@neefDynamicMetabolic2011].
 
 #### iCOUNT
+
+The inducible cell division counter (iCOUNT) method relies on recombination-induced tag exchange (RITE) of endogenously tagged long-lived proteins to fluorescent proteins to track the number of cell divisions [@denoth-lippunerVisualizationIndividual2021].
+In this case, histone variant H3.1 is tagged with mCherry and switches to EGFP upon Cre activation.
+Then, every subsequent cell division reduces the amount of H3.1-mCherry by half, as new H3.1-EGFP is produced to refill the pool of histones.
+By comparing the ratio of intensity between mCherry and EGFP, we can infer the number of cell cycles since Cre activation.
+This approach allows us to accurately count the number of cell divisions through integrated signal normalization.
+As this is a Cre-based system, genetic-based labeling is also possible.
+The authors claim that this method can count up to 3-4 cell divisions in vivo.
+iCOUNT mice are now commercially available, and our collaborator, Dr. Dwight Bergles, already has them expanding in his colonies.
 
 The inducible cell division counter (iCOUNT) method relies on recombination-induced tag exchange (RITE) of endogenously tagged long-lived proteins to fluorescent proteins to track the number of cell divisions [@denoth-lippunerVisualizationIndividual2021].
 In this case, histone variant H3.1 is tagged with mCherry and would switch to EGFP upon Cre activation.
@@ -123,12 +137,12 @@ Figure 1b from [@denoth-lippunerVisualizationIndividual2021]
 
 #### Combining Labeling with Transcriptomics
 
-The studies of neural progenitors have been dependent on these labeling strategies.
-Yet, their utility could be much greater if we could precisely combine the labeling readouts with transcriptome-wide measurements.
+The study of neural progenitors has relied heavily on these labeling strategies.
+However, their utility could be significantly enhanced if we could precisely combine the labeling readouts with transcriptome-wide measurements.
 Current studies utilizing these labeling strategies are generally limited to imaging in conjunction with immunofluorescence labeling [@telleySequentialTranscriptional2016], cell sorting [@luComprehensiveView2022], and a limited set of genes using FISH [@westSpatiotemporalPatterns2022].
 In order to combine these labeling strategies with scRNA-Seq methods, we need to label these tags with oligonucleotides [@blackCODEXMultiplexed2021; @stoeckiusSimultaneousEpitope2017].
 For CFSE and iCOUNT, I will use oligonucleotide-conjugated antibodies to FITC [@goodProliferationTracing2019], EGFP, and mCherry, respectively.
-Linking EdU to an oligonucleotide has proven more technically challenging as we do not want to use antibodies as these neccessitate harsh epitope unmasking.
+Linking EdU to an oligonucleotide has proven more technically challenging, as we do not want to use antibodies, as these necessitate harsh epitope unmasking.
 Instead, I designed an assay in which biotin azide is reacted with EdU and subsequently detected with oligonucleotide-conjugated streptavidin. CFSE can be labeled with anti-FITC antibodies with good efficacy.
 
 I plan to use sci-RNA-seq3 [@martinOptimizedProtocol2022], a cost-efficient method that would allow us to scale our analysis to larger cell numbers and conditions.
@@ -138,49 +152,48 @@ Heterogeneity can be initially assessed using embeding methods, such as tSNE and
 
 #### Validation
 
-We will perform validation of these labeling techniques using _in vitro_ cell culture experiment with the HEK293T and Jurkat cell lines.
+I will perform validation of these labeling techniques using in vitro cell culture experiments with the HEK293T and Jurkat cell lines.
 To establish the ground truth of cell cycle parameters, we will employ the Fluorescent Ubiquitination-based Cell Cycle Indicator (FUCCI) [@bajarFluorescentIndicators2016] to track the cell cycle in a live cell imaging experiment.
-This FUCCI system has been established in the lab and clonal population of cell lines have been generated.
-To determine the senstivity of the detection of the change in rate, we will pulse cells with EdU/CFSE alongside with pharmacological agents that perturb the cell cycle, such as hydroxyurea and nocodazole.
-We will collect the cells for sequencing after several chase intervals.
-This would be done in concordance with the tricycle algorithm, which phases the position a cell is in its cell cycle from its transcriptional state [@zhengUniversalPrediction2022].
+This FUCCI system has been established in the lab, and clonal populations of cell lines have been generated.
+To determine the sensitivity of the detection of the change in rate, we will pulse cells with EdU/CFSE alongside pharmacological agents that perturb the cell cycle, such as hydroxyurea and nocodazole.
+I will collect the cells for sequencing after several chase intervals.
+This will be done in concordance with the tricycle algorithm, which phases the position a cell is in its cell cycle from its transcriptional state [@zhengUniversalPrediction2022].
 Tricycle provides substantially higher resolution compared to the standard method of artificially binning the cell cycle into four phases and analyzing them separately.
 
 ### Aim 2a: Investigate how specification of neuronal subtypes is affected by key parameters of the cell cycle
 
-Prior studies have established Sox9 as a mediator for cell cycle length in a subgroup of radial progenitor cells with reduced neurogenic behavior [@fabra-beserDifferentialExpression2021].
-This is in agreement with other studies using pharmacological approaches to slow the cell cycle [@mitchell-dickAcuteLengthening2020].
-Here, we plan to extend the results of these studies by performing a transcriptome-wide characterization of radial progenitor cell population and their temporal behaviors using the tools described in Aim 1.
-Using mice from various timepoints during development between E10.5 and E15.5,
-I will infer a set of other differentially expressed genes that correlate to the position of the cell in a cell cycle, along with other parameters of the cell cycle.
-
-Furthermore, by using the high-resolution tracing capabilities of our tools, we could study in parallel the behaviors of heterogeneous populations and identify key differences in their transcriptomic signature.
-As a validation, we plan to test whether we rediscover _Sox9_ in our dataset as differentially expressed.
+Previous research has identified Sox9 as a mediator of cell cycle length in a subset of radial progenitor cells exhibiting reduced neurogenic behavior [@fabra-beserDifferentialExpression2021].
+These findings align with other studies employing pharmacological approaches to slow the cell cycle [@mitchell-dickAcuteLengthening2020].
+We aim to build upon these results by conducting a transcriptome-wide analysis of radial progenitor cell populations and their temporal behaviors using the methods outlined in Aim 1.
+By examining mice from various developmental timepoints between E10.5 and E15.5, I will identify differentially expressed genes correlating with cell cycle position and other cell cycle parameters.
+Additionally, our tools' high-resolution tracing capabilities will enable parallel examination of heterogeneous populations, allowing for the identification of key differences in their transcriptomic signatures.
+As a validation step, we plan to verify whether Sox9 is differentially expressed in our dataset.
 
 ### Aim 2b: Demonstrate the effect of cell cycle perturbation on fate specification using genetic and pharmacological approaches
 
-The role of the cell cycle dynamics in neurogenesis is made apparant through genetic or pharmacological perturbation.
-In humans, heterochronic mutations have been associated with microcephaly [@doobinMicrocephalyCell2016].
-Furthermore, microcephaly secondary to Zika virus infection has been associated with mitotic catastrophe in neural progenitor cells [@rychlowskaZikaVirus2022]. In experimental settings, mutations in genes, such as _Magoh_, [@sheehanDosagedependentRequirements2020] have been shown to result in mitotic defects.
-I plan to use a mouse line our lab experience with, the _Pantr2_ KO mice [@augustinPantr2Transacting2022].
-_Pantr2_ is a long non-coding RNA that alters cell cycle dynamics and I plan to probe in detail the mechanisms of such alterations through tools developed in Aim 1.
+Cell cycle dynamics' role in neurogenesis becomes evident through genetic or pharmacological perturbation.
+In humans, heterochronic mutations are associated with microcephaly [@doobinMicrocephalyCell2016], while Zika virus-induced microcephaly is linked to mitotic catastrophe in neural progenitor cells [@rychlowskaZikaVirus2022].
+Experimental settings have demonstrated mitotic defects resulting from gene mutations, such as _Magoh_ [@sheehanDosagedependentRequirements2020].
+I plan to utilize a mouse line familiar to our lab, the _Pantr2_ KO mice [@augustinPantr2Transacting2022].
+_Pantr2_, a long non-coding RNA, alters cell cycle dynamics, and I intend to investigate these alterations in detail using tools developed in Aim 1.
 
 ### Data analysis
 
-I will reconstruction of cellular histories by integrating transcriptiomic data with tracer data.
-The cell cycle kinetics can be inferred using the CycleFlow algorithm [@jollyCycleFlowSimultaneously2022].
-By using the tracer as a covariate, I will initially perform regression analysis to discover differentially regulated genes in cells with different cell cycle kinetics.
-alongside with This approach will enable us to both implicate known pathways in specific cellular contexts and discover new functional groupings of co-regulated genes that affect the fate specification of distinct neuronal subtypes in relation to the impact of prolonged mitosis on microcephaly and associated developmental disorders.
+I will reconstruct cellular histories by integrating transcriptomic data with tracer data.
+Cell cycle kinetics can be inferred using the CycleFlow algorithm [@jollyCycleFlowSimultaneously2022].
+By employing the tracer as a covariate, I will initially perform regression analysis to identify differentially regulated genes in cells exhibiting varying cell cycle kinetics.
+This approach will enable us to implicate known pathways in specific cellular contexts and uncover new functional gene groupings that affect distinct neuronal subtype fate specification in relation to prolonged mitosis's impact on microcephaly and related developmental disorders.
 
-Additionally, I will use my lab's experience with latent space representations to develop analytic approaches that is more representative of the complex biology compared to marker gene-based techniques.
-These analyses allow me to discover new functional groupings of co-regulated genes that affect the fate specification of distinct neuronal subtypes in relation to the impact of prolonged mitosis on microcephaly and associated developmental disorders.
+Moreover, I will leverage my lab's expertise with latent space representations to develop analytic approaches that better represent complex biology compared to marker gene-based techniques.
+These analyses will facilitate the discovery of new functional gene groupings influencing the fate specification of distinct neuronal subtypes concerning the effects of extended mitosis on microcephaly and associated developmental disorders.
 
-#### Anticipated problems that might arise and alternative plans to accomplish the specific aims if these problems arise
+### Anticipated problems that might arise and alternative plans to accomplish the specific aims if these problems arise
 
-I have preliminary data demonstrating _in vitro_ success of these methods through the detection of oligonucleotide-tagged EdU using sci-RNA-Seq3 along with flow cytometric detection of oligonucleotide-conjugated antibodies to CFSE.
-The major risk that remains is the adaptation of the method to _in vivo_ conditions.
-However, both EdU and CFSE are in widespread use, and we do not anticipate major difficulties.
-If they do not work, we can fallback to using fluorescent reporters alongside FISH techniques.
+I have obtained preliminary data demonstrating the _in vitro_ success of these methods through oligonucleotide-tagged EdU detection using sci-RNA-Seq3 and flow cytometric detection of oligonucleotide-conjugated antibodies to CFSE.
+By having multiple tracers, we lower the risk of all assays failing.
+The remaining challenge is adapting the method to in vivo conditions.
+However, both EdU and CFSE are widely used, and we do not expect significant difficulties.
+If problems arise, we can resort to employing fluorescent reporters and FISH techniques.
 
 ### Tentative sequence for the investigation
 
