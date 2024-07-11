@@ -8,7 +8,7 @@
   html {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif, Helvetica, Arial, "Segoe UI", "Apple Color Emoji",
       "Segoe UI Emoji";
-      background: radial-gradient(circle at 20% -50%, #10b96e 20%, #ffffff 40%);
+      /* background: radial-gradient(circle at 20% -50%, #10b96e 20%, #ffffff 40%); */
   }
 
   .katex {
