@@ -12,6 +12,7 @@ import rehypeKatex from "rehype-katex-svelte";
 import remarkGfm from "remark-gfm";
 import rehypeLazyLoad from "rehype-plugin-image-native-lazy-loading";
 import relativeImages from "mdsvex-relative-images";
+import {rehypeGithubAlerts} from "rehype-github-alerts";
 
 function katexMacros() {
   const out = {};
@@ -48,6 +49,7 @@ const config = defineConfig({
     [rehypeToc, { headings: ["h1", "h2", "h3"], cssClasses: { toc: "toc not-prose", link: "toc-link" } }],
     rehypeFigure, // Add figcaption from alt text.
     rehypeLazyLoad,
+    rehypeGithubAlerts
     // [rehypeAutolinkHeadings, { behavior: "wrap", test: ["h1", "h2", "h3"] }],
   ],
 });
